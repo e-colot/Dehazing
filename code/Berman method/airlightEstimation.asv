@@ -1,0 +1,79 @@
+function A = airlightEstimation(img)
+
+    dim = size(img);
+    validPatch = 0;
+    edges = edge(mean(img, 3), "canny");
+    patchSize = 10;
+
+    for i = 1:(round(dim(1)/patchSize)-1)
+        for j = 1:(round(dim(2)/patchSize)-1)
+
+            % Clear the figure and display the images
+            figure(1);
+            clf;
+            disp([num2str(i), ' '])
+
+            % Display the original image with the red rectangle
+            subplot(1, 2, 1);
+            imshow(img);
+            hold on;
+            rectangle('Position', [1+patchSize*j, 1+patchSize*i, patchSize, patchSize], 'EdgeColor', 'r', 'LineWidth', 2);
+            title('Original Image');
+            hold off;
+
+            % Display the edges with the red rectangle
+            subplot(1, 2, 2);
+            imshow(edges);
+            hold on;
+            rectangle('Position', [1+patchSize*j, 1+patchSize*i, patchSize, patchSize], 'EdgeColor', 'r', 'LineWidth', 2);
+            title('Edges');
+            hold off;
+
+            patch = img(1+patchSize*i:patchSize*(i+1),1+patchSize*j:patchSize*(j+1),:);
+            centroid = mean(mean(patch, 1), 2);
+            centroid = reshape(centroid, 1, 3);
+
+            % PCA (Principal Component Analysis)
+            patch_reshaped = reshape(patch, [], 3);
+            cov_matrix = cov(double(patch_reshaped));
+            [eigenvectors, eigenvalues] = eig(cov_matrix);
+            % Find the principal component (largest eigenvector)
+            [~, max_idx] = max(diag(eigenvalues));
+            principal_component = eigenvectors(:, max_idx);
+
+            % Project pixels onto the principal component
+            projections = patch_reshaped * principal_component;
+            distances = abs(projections - mean(projections));
+
+            % Sort distances and discard the farthest 20% pixels
+            [~, sorted_indices] = sort(distances, 'ascend');
+            cutoff_index = round(0.8 * length(sorted_indices));
+            filtered_patch = patch_reshaped(sorted_indices(1:cutoff_index), :);
+
+            % Recompute PCA with the filtered patch
+            cov_matrix_filtered = cov(double(filtered_patch));
+            [eigenvectors_filtered, eigenvalues_filtered] = eig(cov_matrix_filtered);
+            [eigenvalues_filtered_sorted, sort_indices] = sort(diag(eigenvalues_filtered), 'descend');
+            eigenvectors_filtered = eigenvectors_filtered(:, sort_indices);
+
+            principal_component = eigenvectors_filtered(:, 1);
+            if sum(principal_component >= 0) ~= 3
+                % 'Positive principal component' rule broken
+                break;
+            end
+
+            numberOfEdges = sum(edges(1+patchSize*i:patchSize*(i+1),1+patchSize*j:patchSize*(j+1)), 'all');
+            if numberOfEdges > 0
+                % 'Patches do not contain an edge' rule broken
+                break;
+            end
+
+            validPatch = validPatch + 1;
+
+        end
+    end
+
+    disp(['Number of valid patches: ', num2str(validPatch)]);
+    A = zeros(1, 3);
+
+end
