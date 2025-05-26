@@ -1,4 +1,4 @@
-function A = airlightEstimation(img)
+function A = airlightDirection(img)
 
     dim = size(img);
 

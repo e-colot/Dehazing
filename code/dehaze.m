@@ -1,9 +1,4 @@
-function J = dehaze(src)
-
-    A = airlightEstimation(src);
-
-    % gives an airlight as the airlight estimator is not yet implemented
-    A = [0.8 0.8 0.8];
+function J = dehaze(src, A)
 
     [t, l] = getParams(src, A);
     tmp = zeros(size(src));
