@@ -5,7 +5,7 @@ function A_hat = AirlightDirection(I)
     patch_size = 10;
     min_valid_patches = 30;
     %initial_patch_limit = 100;
-    angle_threshold_deg = 5;
+    angle_threshold_deg = 15;
 
     % Step 1: Extract all non-edge patches
     gray = rgb2gray(I);
@@ -132,78 +132,89 @@ function A_hat = AirlightDirection(I)
         return;
     end
 
-    % Remove redundant patches with similar directions
-    final_patches = struct('center', {}, 'direction', {}, 'eig1', {}, 'eig2', {}, 'dist_to_origin', {});
-    for i = 1:length(filtered_patches)
-        if isempty(final_patches)
-            final_patches = filtered_patches(i);
-        else
-            is_similar = false;
-            for k = 1:length(final_patches)
-                angle = acosd(dot(filtered_patches(i).direction, final_patches(k).direction) / ...
-                              (norm(filtered_patches(i).direction) * norm(final_patches(k).direction)));
-                %fprintf('Angle between patch %d and %d: %.2f degrees\n', i, k, angle);
-                if angle <= angle_threshold_deg
-                    is_similar = true;
-                    break;
+    A_hat_check = false;
+    while A_hat_check == false
+        % Remove redundant patches with similar directions
+        final_patches = struct('center', {}, 'direction', {}, 'eig1', {}, 'eig2', {}, 'dist_to_origin', {});
+        for i = 1:length(filtered_patches)
+            if isempty(final_patches)
+                final_patches = filtered_patches(i);
+            else
+                is_similar = false;
+                for k = 1:length(final_patches)
+                    angle = acosd(dot(filtered_patches(i).direction, final_patches(k).direction) / ...
+                                  (norm(filtered_patches(i).direction) * norm(final_patches(k).direction)));
+                    %fprintf('Angle between patch %d and %d: %.2f degrees\n', i, k, angle);
+                    if angle <= angle_threshold_deg
+                        is_similar = true;
+                        break;
+                    end
+                end
+    
+                if ~is_similar
+                    final_patches(end + 1) = filtered_patches(i); %#ok<AGROW>
                 end
             end
-
-            if ~is_similar
-                final_patches(end + 1) = filtered_patches(i); %#ok<AGROW>
-            end
         end
-    end
-    fprintf('Number of final patches after direction redundancy removal: %d\n', length(final_patches));
-    if length(final_patches) < 2
-        warning('Not enough final patches to estimate airlight direction.');
-        A_hat = [0;0;0];
-        return;
-    end
-
-    % Estimate candidate A directions via plane intersections
-    A_candidates = [];
-    for i = 1:length(final_patches)
-        for j = i+1:length(final_patches)
-            n1 = cross(final_patches(i).center, final_patches(i).direction);
-            n2 = cross(final_patches(j).center, final_patches(j).direction);
-            A_dir = cross(n1, n2);
-            if norm(A_dir) > 1e-6
-                A_candidates(:, end + 1) = A_dir / norm(A_dir); %#ok<AGROW>
-            end
+        fprintf('Number of final patches after direction redundancy removal: %d\n', length(final_patches));
+        if length(final_patches) < 2
+            warning('Not enough final patches to estimate airlight direction.');
+            A_hat = [0;0;0];
+            return;
         end
-    end
-    fprintf('Number of candidate A directions computed: %d\n', size(A_candidates, 2));
-    if isempty(A_candidates)
-        warning('No candidate airlight directions found from patch intersections.');
-        A_hat = [0;0;0];
-        return;
-    end
-
-    % Choose best A_dir by lowest median distance to patch lines
-    min_median = Inf;
-    A_hat = [0; 0; 0];
-    for j = 1:size(A_candidates, 2)
-        candidate = A_candidates(:, j);
-        dists = zeros(length(final_patches), 1);
+    
+        % Estimate candidate A directions via plane intersections
+        A_candidates = [];
         for i = 1:length(final_patches)
-            % Compute shortest distance between candidate ray and patch line
-            u = candidate;
-            v = final_patches(i).direction;
-            p1 = zeros(3, 1);
-            p2 = final_patches(i).center';
-            cross_uv = cross(u, v);
-            w = p2 - p1;
-            proj = dot(w, cross_uv) * cross_uv / (norm(cross_uv)^2);
-            d = norm(w - proj);
-            dists(i) = d;
+            for j = i+1:length(final_patches)
+                n1 = cross(final_patches(i).center, final_patches(i).direction);
+                n2 = cross(final_patches(j).center, final_patches(j).direction);
+                A_dir = cross(n1, n2);
+                if norm(A_dir) > 1e-6
+                    A_candidates(:, end + 1) = A_dir / norm(A_dir); %#ok<AGROW>
+                end
+            end
         end
-        med = median(dists);
-        if med < min_median
-            min_median = med;
-            A_hat = candidate;
+        fprintf('Number of candidate A directions computed: %d\n', size(A_candidates, 2));
+        if isempty(A_candidates)
+            warning('No candidate airlight directions found from patch intersections.');
+            A_hat = [0;0;0];
+            return;
+        end
+    
+        % Choose best A_dir by lowest median distance to patch lines
+        min_median = Inf;
+        A_hat = [0; 0; 0];
+        for j = 1:size(A_candidates, 2)
+            candidate = A_candidates(:, j);
+            dists = zeros(length(final_patches), 1);
+            for i = 1:length(final_patches)
+                % Compute shortest distance between candidate ray and patch line
+                u = candidate;
+                v = final_patches(i).direction;
+                p1 = zeros(3, 1);
+                p2 = final_patches(i).center';
+                cross_uv = cross(u, v);
+                w = p2 - p1;
+                proj = dot(w, cross_uv) * cross_uv / (norm(cross_uv)^2);
+                d = norm(w - proj);
+                dists(i) = d;
+            end
+            med = median(dists);
+            if med < min_median
+                min_median = med;
+                A_hat = candidate;
+            end
+        end
+        if any(A_hat < 0) && any(A_hat > 0)
+            angle_threshold_deg = angle_threshold_deg + 5;
+        elseif size(A_candidates, 2) > 10
+            angle_threshold_deg = angle_threshold_deg + 5;
+        else
+            break;
         end
     end
+    
     % Case if all A_hat components are negatives
     if any(A_hat < 0)
         A_hat = -A_hat;
