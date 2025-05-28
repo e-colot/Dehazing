@@ -1,4 +1,4 @@
-function J = dehaze(src, A)
+function [J, t] = dehaze(src, A)
 
     [t, l] = getParams(src, A);
     tmp = zeros(size(src));
@@ -20,7 +20,7 @@ function [transmission, shading] = getParams(img, albedo)
     dimensions = size(img);
     img = reshape(img, [], 3); % Reshape the image to a 2D array
 
-    I_a = img * albedo' / norm(albedo);
+    I_a = img * albedo / norm(albedo);
     I_r = sqrt(sum(img.^2, 2) - I_a.^2);
 
     h = (norm(albedo) - I_a) ./ I_r;
