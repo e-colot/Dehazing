@@ -7,6 +7,7 @@ function [J, t] = dehaze(src, A)
     tmp(:,:,3) = (1-t) .* A(3);
     J = (src - tmp) ./ t;
 
+
 end
 
 
@@ -25,7 +26,8 @@ function [transmission, shading] = getParams(img, albedo)
 
     h = (norm(albedo) - I_a) ./ I_r;
 
-    eta = covariance(I_a, h) / covariance(I_r, h);
+    covariance = cov(I_a, h) ./ cov(I_r, h);
+    eta = covariance(1, 2);
 
     transmission = 1 - (I_a - eta*I_r) / norm(albedo);
     shading = I_r ./ transmission;
@@ -35,15 +37,3 @@ function [transmission, shading] = getParams(img, albedo)
 end
 
 
-
-function [cova] = covariance(v1, v2)
-
-    expextedVal1 = mean(v1, "all");
-    expextedVal2 = mean(v2, "all");
-
-    v1 = v1 - expextedVal1;
-    v2 = v2 - expextedVal2;
-
-    cova = sum(v1 .* v2, "all") / (size(v1, 1) * size(v1, 2) - 1);
-
-end

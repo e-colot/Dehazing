@@ -1,20 +1,26 @@
 clear; close all; clc;
 
-image = im2double(imread('./../srcImages/hazy1.png'));
+image = im2double(imread('./../srcImages/hazy2.png'));
 
 Ahat = AirlightDirection(image);
-A = airlightAmplitude(image, Ahat);
+
+%A = airlightAmplitude(image, Ahat);
+A = Ahat;
 
 figure;
 imshow(reshape(A, 1, 1, 3), InitialMagnification=10000);
 title('Estimated Airlight Color A');
 
-[output, ~] = dehaze(image, A);
+[output, transmission] = dehazeHazeLines(image, A);
+
 
 figure;
-subplot(121);
+subplot(131);
 imshow(image); 
 title('Original Image');
-subplot(122);
+subplot(132);
 imshow(output);
 title('Dehazed Image');
+subplot(133);
+imshow(transmission, []);
+title('Estimated Transmission Map');

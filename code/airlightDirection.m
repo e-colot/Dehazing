@@ -225,30 +225,30 @@ function A_hat = AirlightDirection(I)
 
     disp('%%%%%%%%%%%%%%%%%END VECTOR DETERMINATION%%%%%%%%%%%%%%%%')
 
-    figure;
-    hold on;
-    grid on;
-    xlabel('R');
-    ylabel('G');
-    zlabel('B');
-    title('Patch Lines in RGB Space and Estimated Airlight Direction');
+    % figure;
+    % hold on;
+    % grid on;
+    % xlabel('R');
+    % ylabel('G');
+    % zlabel('B');
+    % title('Patch Lines in RGB Space and Estimated Airlight Direction');
     
-    % Plot all selected patch lines in blue (thicker lines)
-    for i = 1:length(final_patches)
-        p = final_patches(i);
-        line_pts = [p.center' - 0.2 * p.direction, p.center' + 0.2 * p.direction];
-        plot3(line_pts(1,:), line_pts(2,:), line_pts(3,:), 'b-', 'LineWidth', 2);
-    end
+    % % Plot all selected patch lines in blue (thicker lines)
+    % for i = 1:length(final_patches)
+    %     p = final_patches(i);
+    %     line_pts = [p.center' - 0.2 * p.direction, p.center' + 0.2 * p.direction];
+    %     plot3(line_pts(1,:), line_pts(2,:), line_pts(3,:), 'b-', 'LineWidth', 2);
+    % end
     
-    % Plot the estimated A_hat direction (ray from origin) in red
-    quiver3(0, 0, 0, A_hat(1), A_hat(2), A_hat(3), ...
-        0.5, 'r', 'LineWidth', 3, 'MaxHeadSize', 1);
+    % % Plot the estimated A_hat direction (ray from origin) in red
+    % quiver3(0, 0, 0, A_hat(1), A_hat(2), A_hat(3), ...
+    %     0.5, 'r', 'LineWidth', 3, 'MaxHeadSize', 1);
     
-    legend('Patch RGB lines', 'Estimated Â');
-    axis equal;
-    xlim([0 1]);
-    ylim([0 1]);
-    zlim([0 1]);
-    view(3); % ensures 3D view
+    % legend('Patch RGB lines', 'Estimated Â');
+    % axis equal;
+    % xlim([0 1]);
+    % ylim([0 1]);
+    % zlim([0 1]);
+    % view(3); % ensures 3D view
 end
 

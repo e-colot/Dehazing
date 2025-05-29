@@ -1,9 +1,8 @@
 % Comes from https://www.cs.huji.ac.il/w~raananf/projects/defog/dehaze.m
 % This is a simple example of the dehazing algorithm described in:
 % Fattal, Raanan. "Single image dehazing." ACM transactions on graphics (TOG) 27.3 (2008): 72.
+clear; close all; clc;
 
-
-function dehaze
 
 NS = 64 ;
 N = NS * NS ;
@@ -110,12 +109,14 @@ subplot(2,4,6), imshow(tim), title('True image') ;
 
 function [est_t est_l est_eta] = estimate(A, I)
 
-IA = I * A / norm(A) ;
-IR = sqrt(sum(I.^2,2) - IA.^2) ;
-H = (norm(A) - IA) ./ IR ;
+    IA = I * A / norm(A) ;
+    IR = sqrt(sum(I.^2,2) - IA.^2) ;
+    H = (norm(A) - IA) ./ IR ;
 
-C = cov(IA, H) ./ cov(IR, H) ;
-est_eta = C(1,2) ;
+    C = cov(IA, H) ./ cov(IR, H) ;
+    est_eta = C(1,2) ;
 
-est_t = 1 - (IA - est_eta * IR) / norm(A) ;
-est_l = IR ./ est_t ;
+    est_t = 1 - (IA - est_eta * IR) / norm(A) ;
+    est_l = IR ./ est_t ;
+
+end
