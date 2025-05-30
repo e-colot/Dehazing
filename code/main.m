@@ -1,12 +1,12 @@
 clear; close all; clc;
 
 %image = im2double(imread('./../srcImages/hazy1.png'));
-image = im2double(imread('./../srcImages/pumpkins_input.png'));
+image = im2double(imread('./../srcImages/hazy4.jpg'));
 
 Ahat = AirlightDirection(image);
 
 %A = airlightAmplitude(image, Ahat);
-A = Ahat;
+A = 0.9*Ahat;
 %A = [0.84; 0.79; 0.84]; % Manually set airlight for testing
 
 figure;
