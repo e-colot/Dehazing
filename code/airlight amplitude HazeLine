@@ -1,0 +1,88 @@
+function A_mag = estimateAirLightMagnitude_hazelines(I, A_dir, N, K, deltaA, tau0)
+% Computed using Haze-Lines (Berman et al., CVPR 2016)
+% estimateAirLightMagnitude  Estimate the scalar magnitude α of the air-light
+%
+%   A_mag = estimateAirLightMagnitude(I, A_dir)
+%   A_mag = estimateAirLightMagnitude(I, A_dir, N, K, deltaA, tau0)
+%
+% INPUTS
+%   I        - Hazy RGB image, as double in [0,1]
+%   A_dir    - 3×1 air-light _orientation_ vector (need not be unit length)
+%   N        - # of clusters (default 1000)                    [§3.3 :contentReference[oaicite:0]{index=0}]
+%   K        - # of haze-line directions per plane (default 40)
+%   deltaA   - step for α sampling (default 0.02)              [∆A in Alg. 1 :contentReference[oaicite:1]{index=1}]
+%   tau0     - base threshold τ₀ (default 0.02)                [Eq. 6 :contentReference[oaicite:2]{index=2}]
+%
+% OUTPUT
+%   A_mag    - estimated magnitude α (scalar)
+
+  if nargin<3, N = 1000; end
+  if nargin<4, K = 40;  end
+  if nargin<5, deltaA = 0.02; end
+  if nargin<6, tau0   = 0.02; end
+
+  % normalize orientation to unit
+  v = A_dir(:) / norm(A_dir);
+
+  %% 1) Quantize colors into N clusters
+  [ind, map] = rgb2ind(I, N, 'nodither');      % indexed image + colormap
+  cmap = double(map);                          % N×3 in [0,1]
+  % count pixels per cluster
+  w = histcounts(ind(:), 0.5:(size(cmap,1)+0.5))';
+
+  %% 2) Determine α search range so that A(c) > all observed In(c):
+  %    α_min = max_{i,c} ( cmap(i,c) / v(c) )
+  alpha_min = max( bsxfun(@rdivide, cmap, v') , [], 'all' );
+  %    also constrain A(c)<=1 ⇒ α_max = min_c ( 1 / v(c) )
+  alpha_max = min( 1 ./ v );
+
+  % if alpha_min >= alpha_max
+  %   error('Orientation implies no feasible α: adjust your A_dir or data range.');
+  % end
+
+  % sample α in [α_min, α_max]
+  alphas = alpha_min : deltaA : alpha_max;
+  M = numel(alphas);
+
+  %% 3) Precompute K unit directions (θ_k,φ_k) on the sphere
+  %    (we'll just sample K longitudes in [0,2π), fix latitude=π/4 for simplicity;
+  %     you can of course tile the sphere more uniformly if desired)
+  theta = linspace(0, 2*pi, K+1);  theta(end)=[];
+  phi   = pi/4;  % e.g. 45° elevation
+  % convert to unit vectors:
+  lineDirs = [ cos(theta')*sin(phi), sin(theta')*sin(phi), repmat(cos(phi),K,1) ];
+
+  %% 4) For each α, accumulate votes over all clusters & directions
+  votes = zeros(M,1);
+  for mi = 1:M
+    A_cand = alphas(mi) * v;                    % candidate air-light
+    diffs = cmap - A_cand';                     % N×3
+    d_norm = sqrt(sum(diffs.^2,2));             % ‖In - A‖
+    tau_i  = tau0 * (1 + d_norm/sqrt(3));       % adaptive threshold §3.2 :contentReference[oaicite:3]{index=3}
+    f_i    = 1 + 4*exp(-d_norm);                % weight f(y)=1+4e^{-y}
+
+    % loop over clusters & directions
+    acc = 0;
+    for ni = 1:size(cmap,1)
+      % skip empty clusters
+      if w(ni)==0, continue; end
+
+      % vector from A to cluster center
+      vAi = diffs(ni,:);  % 1×3
+
+      % compute cross-product distances to each line
+      %   dist = ‖ vAi × lineDirs(k,:) ‖_2
+      % only need to know if < tau_i(ni)
+      for kidx = 1:K
+        if norm( cross(vAi, lineDirs(kidx,:)) ) < tau_i(ni)
+          acc = acc + w(ni)*f_i(ni);
+        end
+      end
+    end
+    votes(mi) = acc;
+  end
+
+  %% 5) pick the α with maximal votes
+  [~,best] = max(votes);
+  A_mag = alphas(best);
+end
