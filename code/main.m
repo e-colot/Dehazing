@@ -5,9 +5,8 @@ image = im2double(imread('./../srcImages/hazy4.jpg'));
 
 Ahat = AirlightDirection(image);
 
-%A = airlightAmplitude(image, Ahat);
-A = 0.9*Ahat;
-%A = [0.84; 0.79; 0.84]; % Manually set airlight for testing
+A = airlightAmplitude(image, Ahat);
+%A = Ahat;
 
 figure;
 imshow(reshape(A, 1, 1, 3), InitialMagnification=10000);
