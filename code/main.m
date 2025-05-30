@@ -1,7 +1,7 @@
 clear; close all; clc;
 
 %image = im2double(imread('./../srcImages/hazy1.png'));
-image = im2double(imread('./../srcImages/hazy4.jpg'));
+image = im2double(imread('./../srcImages/hazy3.png'));
 
 Ahat = AirlightDirection(image);
 
@@ -14,6 +14,8 @@ title('Estimated Airlight Color A');
 
 [output, transmission] = dehazeHazeLines(image, A);
 
+% histogram equalization of the output
+output = imadjust(output, stretchlim(output), []);
 
 figure;
 subplot(131);
