@@ -27,7 +27,7 @@
 Outdoor images are affected by atmospheric visibility reduction, particularly haze. The hazing effect is influenced by several 
 factors including location, weather, pollution level and other geographic and environmental parameters. Visibility degradation depends on the distance between the camera and the scene points. Literature shares various algorithms to dehaze outdoor 
 images.  As part of the image processing project, our group will apply an algorithm performing a dehazing process requiring
-one single input developed by scientists from Hebrew University of Jerusalem \cite{b1} \cite{b2}. By delimiting and exploiting local patches from this single input, the global airlight vector - the atmospheric
+one single input developed by scientists from Hebrew University of Jerusalem \cite{airlight} \cite{dehaze}. By delimiting and exploiting local patches from this single input, the global airlight vector - the atmospheric
 colour - and the transmission gradient - the hazing reduction coefficient - are extracted.  Through this report, we will describe 
 the three steps of the algorithm, validate the dehazing process by showing the after-process results and compare it with the 
 original pictures.  
@@ -38,7 +38,7 @@ original pictures.
 Haze, visibility reduction phenomenon, is coming from the presence in the atmosphere of particles scattering the ambient 
 light, attenuating the contrast for outdoor images and corrupting the true radiance of the scenery by a ambient colour.
 Most dehazing algorithms are performed based on the RGB representation of the images.
-The haze effect is commonly modelled by the following equation \cite{b1}:
+The haze effect is commonly modelled by the following equation \cite{airlight}:
 
 \begin{equation}
 \label{image_model}
@@ -47,7 +47,7 @@ The haze effect is commonly modelled by the following equation \cite{b1}:
 
 where $\mathbf{x}$ is the pixel position, $\mathbf{I}$ is the pixel colour under hazing condition or in other words, the image input, $\mathbf{A}$ is the ambient light colour,
 $\mathbf{J}$ the true pixel radiance, $t$ is the transmission coefficient ranging from 0 (airlight colour)
-to 1 (true colour), which is distance-dependent. It is defined by \cite{b2} as:
+to 1 (true colour), which is distance-dependent. It is defined by \cite{dehaze} as:
 
 \begin{equation}
 \label{scattering_coefficient}
@@ -63,32 +63,32 @@ The contrast attenuation and the ambient colour corruption can be highlighted by
 \end{itemize}
 $\mathbf{I}(\mathbf{x})$ being the input image, the dehazing process is reduced to find the transmission and the global airlight parameters to recompose
 the true radiance scenery.  This process can be decomposed in three steps : determining the airlight vector direction, finding its magnitude and finally computing the transmission coefficient.
-  
-Even if the algorithm is indeed based on the equation (\ref{image_model}), it uses an mathematical relation steming from (\ref{image_model}):
 
- \begin{equation}
+\section{Airlight vector determination}  
+
+Even if the algorithm is indeed based on the equation (\ref{image_model}), it uses a reformulation of it \cite{airlight}:
+
+\begin{equation}
 \label{shading_coefficient}
-I(x) = l(x) R_i + c_i A
+\mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + c_i \mathbf{A}
 \end{equation}
 
-Where $l(x)$ expresses the shading coefficient related to the angle between the normal direction of the scene surface and 
-the 3D line from the camera to this specific surface, $R_i$ is the true radiance and $c_i$, the ambient light coefficient - $(1-t(x))$.
-The dehazing method is a local patch-based algorithm meaning the image is decomposed on patches on which information is
+Where $l(\mathbf{x})$ expresses the shading coefficient related to the angle between the normal direction of the scene surface and
+the 3D line from the camera to this specific surface, $R_i$ is the true radiance and $c_i$, the ambient light coefficient $(1-t(\mathbf{x}))$.
+The airlight determination method described in \cite{airlight} is a local patch-based algorithm meaning the image is decomposed on patches on which information is
 gleaned after image treatment.  The patches should obey to specific conditions : it should be composed of pixels with same
- true radiance and with constant transmission coefficient. The motivation behind this decomposition lies in the retrieval of the airlight
-vector.  By finding patches composed of pixels fulfilling the previous constraints, we can construct the line $I(x) = l(x) R_i + C$ 
-with C a constant equals to $c_i A$. The funding idea is that the constructed line will intersect the airligth vector in the RGB frame.
+true radiance and with constant transmission coefficient. The motivation behind this decomposition lies in the retrieval of the airlight
+vector.  By finding patches composed of pixels fulfilling the previous constraints, we can construct the line $\mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + \mathbf{C}$ 
+with $\mathbf{C}$ a constant equals to $c_i \mathbf{A}$. The funding idea is that the constructed line will intersect the airlight vector in the RGB frame.
 Reconstructing lines from multiples patches will lead to the determination of the airlight vector which ultimately will result to
-the dehazing of the image.  The steps will be explained in details in the following sections.
+the dehazing of the image.
 
-\section{Airlight vector determination}
-The importance of the airlight determination has been introduced in the previous section.  We will now move to its computation.
-the first stage will be focused on the determination of the airligth vector. It can be split in 6 parts :
+The importance of the airlight determination has been introduced in the introduction and we will now move to its computation.
+the first part will be focused on the determination of the orientation of the airlight vector. It can be split in 6 steps:
 \begin{itemize}[\IEEEsetlabelwidth{vi}]
-\item[i] \textit{Patch decomposition} As mentionned previously, the airlight vector can be calculated through local patches 
-processing.  Thus the initial step is to generate these local patches from the image.  Paper [1] advices the usage of 10x10
-patches leading to optimal result for most cases and we will follow their methodology. Only patches with smooth variations
-should be kept avoiding rough colour distorsion which affect the colour line based on the shading coefficient.  Therefore, Canny
+\item[i] \textit{Patch decomposition} As mentioned previously, the airlight vector can be calculated through local patches processing. 
+Thus the initial step is to generate these local patches from the image. The size of those patches is set to $10 \times 10$ pixels, which leads to optimal results for most cases \cite{airlight}. Only patches with smooth variations
+should be kept avoiding rough colour distortion within a patch which affect the colour line based on the shading coefficient.  Therefore, Canny
 algorithm is run upstream detecting patches with edges and getting rid of them for next steps.  
 \item[ii] \textit{Eigenvalue comparison} Once patches are validated, the colour line slope are calculated through the determination
 of the eigenvalues.  Ensuring the slope is reflecting the shading coefficient $l(x)$, first the main eigenvalue should be passing 
@@ -155,8 +155,8 @@ EMMERAN CHAN
 \vspace{12pt}
 
 \begin{thebibliography}{00}
-\bibitem{b1} M. Sulami, I. Glatzer, R. Fattal and M. Werman, "Automatic recovery of the atmospheric light in hazy images," 2014 IEEE International Conference on Computational Photography (ICCP), Santa Clara, CA, USA, 2014, pp. 1-11.
-\bibitem{b2} D. Berman, T. Treibitz and S. Avidan, "Non-local Image Dehazing," 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, USA, 2016, pp. 1674-1682.
+\bibitem{airlight} M. Sulami, I. Glatzer, R. Fattal and M. Werman, "Automatic recovery of the atmospheric light in hazy images," 2014 IEEE International Conference on Computational Photography (ICCP), Santa Clara, CA, USA, 2014, pp. 1-11.
+\bibitem{dehaze} D. Berman, T. Treibitz and S. Avidan, "Non-local Image Dehazing," 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, USA, 2016, pp. 1674-1682.
 \end{thebibliography}
 
 
