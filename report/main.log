@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  29 MAY 2025 22:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  4 JUN 2025 09:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -234,20 +234,20 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
 
 -- Lines per column: 56 (exact).
 (e:/TexLive/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -269,33 +269,14 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-
-LaTeX Warning: Reference `image_model' on page 1 undefined on input line 43.
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
-(e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
+LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
+ (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-
-LaTeX Warning: Reference `scattering_coefficient' on page 1 undefined on input line 53.
-
-
-LaTeX Warning: Reference `scattering_coefficient' on page 1 undefined on input line 60.
-
-
-LaTeX Warning: Reference `image_model' on page 1 undefined on input line 63.
-
-
-
-
-LaTeX Warning: Reference `image_model' on page 1 undefined on input line 69.
-
-
-LaTeX Warning: Reference `image_model' on page 1 undefined on input line 69.
 
 
 
@@ -303,10 +284,6 @@ LaTeX Warning: Reference `image_model' on page 1 undefined on input line 69.
 
 
 ]
-
-LaTeX Warning: Reference `airlight_vector' on page 2 undefined on input line 134.
-
-
 
 
 ** Conference Paper **
@@ -326,24 +303,17 @@ Before submitting the final camera ready copy, remember to:
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 4156 strings out of 473362
- 65097 string characters out of 5720994
- 473571 words of memory out of 5000000
- 27238 multiletter control sequences out of 15000+600000
- 590242 words of font info for 93 fonts, out of 8000000 for 9000
+ 4158 strings out of 473362
+ 65167 string characters out of 5720994
+ 473682 words of memory out of 5000000
+ 27241 multiletter control sequences out of 15000+600000
+ 589135 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,8n,65p,368b,266s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,8n,65p,373b,266s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (2 pages, 136824 bytes).
+Output written on main.pdf (2 pages, 137334 bytes).
 PDF statistics:
  72 PDF objects out of 1000 (max. 8388607)
  43 compressed objects within 1 object stream

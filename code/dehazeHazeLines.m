@@ -67,6 +67,9 @@ function [J, t] = dehazeHazeLines(I, A)
     % solve optimization problem (Eq. (15))
     t = wls_optimization(t_LB_hat, data_term_weight, I, lambda);
 
+    % limit t to [0.1, 1]
+    t = min(max(t, 0.1), 1);
+
 J = (I - (1 - t) .* reshape(A, 1, 1, 3)) ./ max(t, 0.1);
 
 end
