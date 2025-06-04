@@ -7,6 +7,8 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{url}
+
 
 \begin{document}
 
@@ -145,7 +147,63 @@ by step the thresholds until 10 patches remain.  These patches will be used for 
 \section{Airlight magnitude determination}
 NIMA CHAN
 \section{transmission range determination}
-EMMERAN CHAN
+The method described in \cite{dehaze} is based on a simple assumption: an image without any haze is often composed of a few dominant colours. This allows to regroup the pixels of the input image in a few clusters, each representing one of those dominant colours. Each pixel inside such cluster will be, according to Eq. (\ref{image_model}), between the dominant colour and the airlight vector determined previously. The transmission coefficient can then be computed by finding the distance between the pixel and the airlight vector.\par
+The clusters described previously are named \textit{haze-lines} in \cite{dehaze}. and are found by first centering the image around the airlight vector:
+\begin{equation}
+    \label{eq:centered_image}
+    \mathbf{I}_A(\mathbf{x}) = \mathbf{I}(\mathbf{x}) - \mathbf{A}
+\end{equation}
+This means that, when combined with Eq. (\ref{image_model}):
+
+\begin{equation}
+    \label{eq:centered_image_model}
+    \mathbf{I}_A(\mathbf{x}) = t(\mathbf{x}) \left[\mathbf{J}(\mathbf{x}) - \mathbf{A}\right]
+\end{equation}
+
+And this centered image is then represented in polar coordinates. This means that each pixel x will be represented by its distance to the airlight vector and its longitudinal and azimuthal angle with respect to it:
+\begin{equation}
+    \label{eq:polar_coordinates}
+    \mathbf{I}_A(\mathbf{x}) = \left[r(\mathbf{x}), \theta(\mathbf{x}), \phi(\mathbf{x})\right]
+\end{equation}
+
+In this polar system, pixels with a similar orientation belong to the same haze-line as they would then all have a color between the airlight vector and the dominant color of the haze-line. The clustering is performed by splitting the polar coordinates into 1000 bins (done by the authors of \cite{dehaze} in \cite{github}) and then finding the nearest bin for every pixel. Fig. \ref{fig:haze_lines} shows one of the haze-lines together with the reference image. 
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/hazeLine.png}
+    \caption{Haze-line example of an image. The red circles in the original image (left) are the pixels of the haze line. The right plot shows the same pixels in an RGB space centered around the airlight vector.}
+    \label{fig:haze_lines}
+\end{figure}
+The transmission $t(\mathbf{x})$ is approached by estimating the dominant colour of each haze-line as the one of the pixels with the highest distance to the airlight vector:
+\begin{equation}
+    \label{eq:dominant_color}
+    r_{max, H} = \max_{\mathbf{x} \in H} r(\mathbf{x})
+\end{equation}
+Where $H$ is the haze-line. The transmission coefficient estimate $\tilde{t}(\mathbf{x})$ is then computed as the ratio between the distance of the pixel to the airlight vector $r(\mathbf{x})$ and the maximum distance of the haze-line $r_{max, H}$:
+\begin{equation}
+    \label{eq:transmission_estimate}
+    \tilde{t}(\mathbf{x}) = r(\mathbf{x})/r_{max, H}
+\end{equation}
+This transmission coefficient estimate has a lower bound of $t_{LB}(\mathbf{x})$, which is defined in \cite{dehaze} as:
+\begin{equation}
+    \label{eq:lower_bound_transmission}
+    t_{LB}(\mathbf{x}) = 1 - \min_{c \in \{R, G, B\}} \left\{I_c(\mathbf{x}) / A_c\right\}
+\end{equation}
+This lower bound is used to ensure that the radiance $\mathbf{J}$ is not negative.\par
+Using this estimate $\tilde{t}$ would not be very efficient as it would lead to a transmission coefficient that is not continuous across the image. Fig. \ref{fig:first_transmission} shows the transmission coefficient computed using the method described above together with the reference image and the resulting dehazed image.\par
+For this reason, the authors of \cite{dehaze} propose to smooth the transmission coefficient estimate by applying an optimization algorithm that aims to find $\hat{t}(\mathbf{x})$ that minimizes:
+\begin{equation}
+    \label{eq:cost_function}
+    C(\tilde{t}) = \sum_{\mathbf{x}} \frac{\left[\hat{t}(\mathbf{x}) - \tilde{t}(\mathbf{x})\right]^2}{\sigma^2(\mathbf{x})} + \lambda \sum_{\mathbf{x}} \sum_{\mathbf{y} \in N_{\mathbf{x}}} \frac{\left[\hat{t}(\mathbf{x}) - \hat{t}(\mathbf{y})\right]^2}{||\mathbf{I}(\mathbf{x}) - \mathbf{I}(\mathbf{y})||^2}
+\end{equation}
+Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission coefficient and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighbourhood of $\mathbf{x}$.\\
+The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission coefficient close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission coefficient of neighbouring pixels, thus enforcing a smoothness constraint. The optimization is done using a weighted least squares optimizer provided in \cite{github} with a weight $\lambda = 0.1$.\par
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/noOpti.png}
+    \caption{First transmission estimate. The left image is the original image, the middle one is the transmission coefficient estimate and the right one is the dehazed image using this estimate.}
+    \label{fig:first_transmission}
+\end{figure}
+
 
 \section{Validation}
 
@@ -157,7 +215,8 @@ EMMERAN CHAN
 \begin{thebibliography}{00}
 \bibitem{airlight} M. Sulami, I. Glatzer, R. Fattal and M. Werman, "Automatic recovery of the atmospheric light in hazy images," 2014 IEEE International Conference on Computational Photography (ICCP), Santa Clara, CA, USA, 2014, pp. 1-11.
 \bibitem{dehaze} D. Berman, T. Treibitz and S. Avidan, "Non-local Image Dehazing," 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, USA, 2016, pp. 1674-1682.
+\bibitem{github}
+D. Berman, non-local-dehazing, GitHub repository, 2018. [Online]. Available: \url{https://github.com/danaberman/non-local-dehazing}. [Accessed: May 31, 2025].
 \end{thebibliography}
-
 
 \end{document}

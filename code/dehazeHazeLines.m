@@ -34,6 +34,7 @@ function [J, t] = dehazeHazeLines(I, A)
     t_hat = R ./ R_max(idx);
     % limit t_hat to [0.1, 1]
     t_hat = min(max(t_hat, 0.1), 1);
+    test = t_hat;
 
 % Step 8: Regularization
     % lower bound correction
@@ -70,6 +71,8 @@ function [J, t] = dehazeHazeLines(I, A)
     % limit t to [0.1, 1]
     t = min(max(t, 0.1), 1);
 
-J = (I - (1 - t) .* reshape(A, 1, 1, 3)) ./ max(t, 0.1);
+    t = reshape(test, h, w);
+
+J = (I - (1 - t) .* reshape(A, 1, 1, 3)) ./ t;
 
 end

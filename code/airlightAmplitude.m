@@ -11,7 +11,7 @@ function A = estimateAirlightAmplitude(img, Ahat)
 
   %--- Step 1: Dehaze assuming a = 1 (init J, t) ------------------------
   % (prepares l_a and t_a before amplitude recovery)
-  [J, t] = dehaze(img, Ahat); % J is the haze-free image, estimate of the true scene color at x after "removing" airlight
+  [J, t] = dehazeHazeLines(img, Ahat); % J is the haze-free image, estimate of the true scene color at x after "removing" airlight
 
 
 
@@ -44,7 +44,7 @@ function A = estimateAirlightAmplitude(img, Ahat)
   s = sVals(2:end);
   while any((s - 1)/a_est + 1 < 0)
     Ahat = 1.2 * Ahat;                 % bump orientation norm
-    [J, t] = dehaze(img, Ahat);
+    [J, t] = dehazeHazeLines(img, Ahat);
     l = sqrt(sum(J.^2, 3));
     for i = 1:numBins
       mask = abs(t - sVals(i+1)) < halfBin;

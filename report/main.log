@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  4 JUN 2025 10:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  4 JUN 2025 13:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -227,6 +227,9 @@ Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+) (e:/TexLive/texlive/2024/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip18
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 ) (e:/TexLive/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count293
@@ -234,20 +237,20 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
 
 -- Lines per column: 56 (exact).
 (e:/TexLive/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -269,17 +272,17 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 45.
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 
-Underfull \hbox (badness 2080) in paragraph at lines 89--93
+Underfull \hbox (badness 2080) in paragraph at lines 91--95
 []\OT1/ptm/m/it/10 Patch de-com-po-si-tion \OT1/ptm/m/n/10 As men-tioned pre-vi-ously, the
  []
 
@@ -289,6 +292,24 @@ Underfull \hbox (badness 2080) in paragraph at lines 89--93
 
 
 ]
+
+<img/hazeLine.png, id=18, 706.13812pt x 262.73157pt>
+File: img/hazeLine.png Graphic file (type png)
+<use img/hazeLine.png>
+Package pdftex.def Info: img/hazeLine.png  used on input line 172.
+(pdftex.def)             Requested size: 252.0pt x 93.76144pt.
+
+
+[2 <./img/hazeLine.png>]
+<img/noOpti.png, id=26, 1110.39844pt x 245.41687pt>
+File: img/noOpti.png Graphic file (type png)
+<use img/noOpti.png>
+Package pdftex.def Info: img/noOpti.png  used on input line 202.
+(pdftex.def)             Requested size: 252.0pt x 55.69574pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 219--220
+\OT1/ptm/m/n/8 Avail-able: $https : / / github . com / danaberman / non-[]local-[]dehazing$.
+ []
 
 
 ** Conference Paper **
@@ -303,25 +324,29 @@ Before submitting the final camera ready copy, remember to:
 
 
 
-[2] (./main.aux)
+
+
+[3
+
+ <./img/noOpti.png>] (./main.aux)
  ***********
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4165 strings out of 473362
- 65242 string characters out of 5720994
- 473682 words of memory out of 5000000
- 27244 multiletter control sequences out of 15000+600000
- 591169 words of font info for 96 fonts, out of 8000000 for 9000
+ 4298 strings out of 473362
+ 67200 string characters out of 5720994
+ 476034 words of memory out of 5000000
+ 27364 multiletter control sequences out of 15000+600000
+ 594890 words of font info for 110 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,8n,65p,379b,266s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (2 pages, 154662 bytes).
+ 57i,8n,65p,651b,338s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (3 pages, 1181982 bytes).
 PDF statistics:
- 82 PDF objects out of 1000 (max. 8388607)
- 49 compressed objects within 1 object stream
+ 100 PDF objects out of 1000 (max. 8388607)
+ 58 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

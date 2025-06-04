@@ -1,12 +1,12 @@
 clear; close all; clc;
 
-%image = im2double(imread('./../srcImages/hazy1.png'));
 image = im2double(imread('./../srcImages/hazy6.png'));
 
-Ahat = AirlightDirection(image);
+% Ahat = AirlightDirection(image);
 
-A = airlightAmplitude(image, Ahat);
-%A = Ahat;
+% A = airlightAmplitude(image, Ahat);
+% disp("End of airlight amplitude estimation");
+A = [0.6057; 0.6073; 0.6136];
 
 figure;
 imshow(reshape(A, 1, 1, 3), InitialMagnification=10000);
@@ -19,8 +19,6 @@ scaleFactor = 0.5;
 denser = scaleFactor*transmission .* output + (1 - scaleFactor*transmission) .* reshape(A, 1, 1, 3);
 
 
-% histogram equalization of the output
-output = imadjust(output, stretchlim(output), []);
 
 figure;
 subplot(221);
