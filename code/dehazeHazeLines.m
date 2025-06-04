@@ -34,7 +34,6 @@ function [J, t] = dehazeHazeLines(I, A)
     t_hat = R ./ R_max(idx);
     % limit t_hat to [0.1, 1]
     t_hat = min(max(t_hat, 0.1), 1);
-    test = t_hat;
 
 % Step 8: Regularization
     % lower bound correction
@@ -54,7 +53,7 @@ function [J, t] = dehazeHazeLines(I, A)
     K_std = accumarray(idx, R(:), [n_points, 1], @std);
     radius_std = reshape(K_std(idx), h, w);
 
-    % remove pixels that have a small standard deviation in radius
+    % remove pixels that have a large standard deviation in radius
     radius_eval_fun = @(r) min(1, 3*max(0.001, r-0.1));
     radius_reliability = radius_eval_fun(radius_std./max(radius_std(:)));
 
@@ -70,8 +69,6 @@ function [J, t] = dehazeHazeLines(I, A)
 
     % limit t to [0.1, 1]
     t = min(max(t, 0.1), 1);
-
-    t = reshape(test, h, w);
 
 J = (I - (1 - t) .* reshape(A, 1, 1, 3)) ./ t;
 

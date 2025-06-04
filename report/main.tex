@@ -189,23 +189,71 @@ This transmission coefficient estimate has a lower bound of $t_{LB}(\mathbf{x})$
     t_{LB}(\mathbf{x}) = 1 - \min_{c \in \{R, G, B\}} \left\{I_c(\mathbf{x}) / A_c\right\}
 \end{equation}
 This lower bound is used to ensure that the radiance $\mathbf{J}$ is not negative.\par
-Using this estimate $\tilde{t}$ would not be very efficient as it would lead to a transmission coefficient that is not continuous across the image. Fig. \ref{fig:first_transmission} shows the transmission coefficient computed using the method described above together with the reference image and the resulting dehazed image.\par
-For this reason, the authors of \cite{dehaze} propose to smooth the transmission coefficient estimate by applying an optimization algorithm that aims to find $\hat{t}(\mathbf{x})$ that minimizes:
+Using this estimate $\tilde{t}$ would not be very efficient as it would lead to a transmission coefficient that is not continuous across the image. Fig. \ref{fig:first_transmission} shows the transmission coefficient computed using the method described above together with the reference image.\par
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/noOpti.png}
+    \caption{First transmission estimate. The left image is the original image and the transmission coefficient estimate is on the right.}
+    \label{fig:first_transmission}
+\end{figure}
+To have a smoother transmission coefficient, the authors of \cite{dehaze} propose to apply an optimization algorithm that aims to find $\hat{t}(\mathbf{x})$ that minimizes:
 \begin{equation}
     \label{eq:cost_function}
     C(\tilde{t}) = \sum_{\mathbf{x}} \frac{\left[\hat{t}(\mathbf{x}) - \tilde{t}(\mathbf{x})\right]^2}{\sigma^2(\mathbf{x})} + \lambda \sum_{\mathbf{x}} \sum_{\mathbf{y} \in N_{\mathbf{x}}} \frac{\left[\hat{t}(\mathbf{x}) - \hat{t}(\mathbf{y})\right]^2}{||\mathbf{I}(\mathbf{x}) - \mathbf{I}(\mathbf{y})||^2}
 \end{equation}
 Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission coefficient and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighbourhood of $\mathbf{x}$.\\
-The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission coefficient close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission coefficient of neighbouring pixels, thus enforcing a smoothness constraint. The optimization is done using a weighted least squares optimizer provided in \cite{github} with a weight $\lambda = 0.1$.\par
+The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission coefficient close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission coefficient of neighbouring pixels, thus enforcing the smoothness constraint. 
+The optimization is done using a weighted least squares optimizer provided in \cite{github}. The weights are chosen in a way that penalizes haze-lines with a low number of pixels, which avoids such haze-lines to have a large influence on the final transmission coefficient. The weights also depends on the standard deviation of $r(\mathbf{x})$ to give less importance to haze-lines with a large spread. \par
+The optimal transmission coefficient $\hat{t}(\mathbf{x})$ is then computed with $\lambda = 0.1$ and gives a smooth transmission coefficient as shown in Fig. \ref{fig:final_transmission}. 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{img/noOpti.png}
-    \caption{First transmission estimate. The left image is the original image, the middle one is the transmission coefficient estimate and the right one is the dehazed image using this estimate.}
-    \label{fig:first_transmission}
+    \includegraphics[width=\linewidth]{img/opti.png}
+    \caption{Final transmission estimate.  The left image is the original image and the transmission coefficient estimate, after optimization, is on the right.}
+    \label{fig:final_transmission}
 \end{figure}
-
+The final step is to recover the true radiance $\mathbf{J}(\mathbf{x})$ using the computed transmission coefficient and the airlight vector with Eq. (\ref{image_model}):
+\begin{equation}
+    \mathbf{J}(\mathbf{x}) = \frac{\mathbf{I}(\mathbf{x}) - (1 - \hat{t}(\mathbf{x})) \cdot \mathbf{A}}{\hat{t}(\mathbf{x})}
+\end{equation}
 
 \section{Validation}
+The whole algorithm has been used on several images as can be seen in Fig. (\ref{validation1}, \ref{validation2}, \ref{validation3}).
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation1.png}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \label{validation1}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation2.png}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \label{validation2}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation3.png}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image on which a histogram stretching has been applied.}
+    \label{validation3}
+\end{figure}
+Fig. \ref{validation3} shows that the algorithm is able to work even for images with a lot of haze. Insterad of removing haze, we can also increase it by applying Eq. (\ref{image_model}) in which the transmission coefficient is multiplied by a factor smaller than 1. This is shown in Fig. \ref{denser_haze} where the transmission coefficient is multiplied by 0.5.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/denser_haze.png}
+    \caption{Increasing the haze of an image. The left image is the original image and the right one is the dehazed image with a denser haze.}
+    \label{denser_haze}
+\end{figure}
+Another use of this algorithm is to estimate the distance of the scene points from the camera. This can be done by using Eq. (\ref{scattering_coefficient}) in which the distance $d(\mathbf{x})$ is computed as:
+\begin{equation}
+    d(\mathbf{x}) = -\frac{\ln(\hat{t}(\mathbf{x}))}{\beta}
+\end{equation}
+where $\beta$ is the wave phase number. A distance mapping is shown in Fig. \ref{distance_mapping}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/distance_mapping.png}
+    \caption{Distance mapping of the scene points. The left image is the original image and the right one is the distance mapping.}
+    \label{distance_mapping}
+\end{figure}
 
 \section{Conclusion}
 
