@@ -28,41 +28,41 @@ Outdoor images are affected by atmospheric visibility reduction, particularly ha
 factors including location, weather, pollution level and other geographic and environmental parameters. Visibility degradation depends on the distance between the camera and the scene points. Literature shares various algorithms to dehaze outdoor 
 images.  As part of the image processing project, our group will apply an algorithm performing a dehazing process requiring
 one single input developed by scientists from Hebrew University of Jerusalem \cite{b1} \cite{b2}. By delimiting and exploiting local patches from this single input, the global airlight vector - the atmospheric
- color - and the transmission gradient - the hazing reduction coefficient - are extracted.  Through this report, we will describe 
- the three steps of the algorithm, validate the dehazing process by showing the after-process results and compare it with the 
- original pictures.  
+colour - and the transmission gradient - the hazing reduction coefficient - are extracted.  Through this report, we will describe 
+the three steps of the algorithm, validate the dehazing process by showing the after-process results and compare it with the 
+original pictures.  
 \end{abstract}
 
 \section{Introduction}
 
-Haze, visibility reduction phenomenom, is coming from the presence in the atmosphere of particules scattering the ambiant 
-light, attenuing the contrast for outdoor images and corrupting the true radiance of the scenary by a ambiant colour.
-To dehaze images, majority of the dehazing algorithm is processing image from on its RGB representation.
- it operate based on the following pixel colour-based image model (\ref{image_model}).  The algorithm presented in this paper will follow the same 
-operating process.
+Haze, visibility reduction phenomenon, is coming from the presence in the atmosphere of particles scattering the ambient 
+light, attenuating the contrast for outdoor images and corrupting the true radiance of the scenery by a ambient colour.
+Most dehazing algorithms are performed based on the RGB representation of the images.
+The haze effect is commonly modelled by the following equation \cite{b1}:
 
 \begin{equation}
 \label{image_model}
-I(x) = t(x) J(x) + (1-t(x)) A
+\mathbf{I}(\mathbf{x}) = t(\mathbf{x}) \mathbf{J}(\mathbf{x}) + (1-t(\mathbf{x})) \mathbf{A}
 \end{equation}
 
-where $I(x)$ is the pixel colour under hazing condition or in other words, the image input, $A$ is the ambiant light colour,
- $J(x)$ the true pixel radiance, $t(x)$ is the transmission function is the scattering coefficient ranging from 0 (airlight colour)
-  to 1 (true radiance colour), distance-dependent is defined by the equation (\ref{scattering_coefficient}):
+where $\mathbf{x}$ is the pixel position, $\mathbf{I}$ is the pixel colour under hazing condition or in other words, the image input, $\mathbf{A}$ is the ambient light colour,
+$\mathbf{J}$ the true pixel radiance, $t$ is the transmission coefficient ranging from 0 (airlight colour)
+to 1 (true colour), which is distance-dependent. It is defined by \cite{b2} as:
 
- \begin{equation}
+\begin{equation}
 \label{scattering_coefficient}
-t(x) = e^{-\beta d(x)}
+t(\mathbf{x}) = e^{-\beta d(\mathbf{x})}
 \end{equation}
 
-where $\beta$ is the wave phase number and $d(x)$ the scene pixel distance from the camera.  From the equation (\ref{scattering_coefficient})
-one can observe $t(x)$ is dependent on the wavelength and thus be different for each colour component.  Nevertheless, the dehazing
-method assume a constant matting gradient $t(x)$ for each colour channel.  The used algorithm is operating under this assumption.
-The contrast attenuation and the ambiant colour corruption can be highlited by breaking the equation (\ref{image_model}) - 
-$t(x) J(x)$, the attenuation component and $(1-t(x)) A$, the ambiant light effect.
-$I(x)$ being the input, the dehazing process is reduced to find the transmission and the global airlight parameters to recompose
-the true radiance scenary.  This process can be decomposed in three steps : the airlight vector determination, the airlight 
-magnitude determination and the transmission coefficient calculation.
+where $\beta$ is the wave phase number and $d(\textbf{x})$ the scene pixel distance from the camera.  From equation (\ref{scattering_coefficient}),
+one can observe $t(\mathbf{x})$ is dependent on the wavelength and is thus different for each colour component.  Nevertheless, the used algorithm assume a constant matting gradient $t(\mathbf{x})$ for each colour channel.
+The contrast attenuation and the ambient colour corruption can be highlighted by breaking the equation (\ref{image_model}) in two distinct parts: 
+\begin{itemize}
+    \item $t(\mathbf{x}) \mathbf{J}(\mathbf{x})$, the true radiance component,
+    \item $(1-t(\mathbf{x})) \mathbf{A}$, the ambient light effect.
+\end{itemize}
+$\mathbf{I}(\mathbf{x})$ being the input image, the dehazing process is reduced to find the transmission and the global airlight parameters to recompose
+the true radiance scenery.  This process can be decomposed in three steps : determining the airlight vector direction, finding its magnitude and finally computing the transmission coefficient.
   
 Even if the algorithm is indeed based on the equation (\ref{image_model}), it uses an mathematical relation steming from (\ref{image_model}):
 
@@ -72,7 +72,7 @@ I(x) = l(x) R_i + c_i A
 \end{equation}
 
 Where $l(x)$ expresses the shading coefficient related to the angle between the normal direction of the scene surface and 
-the 3D line from the camera to this specific surface, $R_i$ is the true radiance and $c_i$, the ambiant light coefficient - $(1-t(x))$.
+the 3D line from the camera to this specific surface, $R_i$ is the true radiance and $c_i$, the ambient light coefficient - $(1-t(x))$.
 The dehazing method is a local patch-based algorithm meaning the image is decomposed on patches on which information is
 gleaned after image treatment.  The patches should obey to specific conditions : it should be composed of pixels with same
  true radiance and with constant transmission coefficient. The motivation behind this decomposition lies in the retrieval of the airlight
@@ -152,11 +152,12 @@ EMMERAN CHAN
 \section{Conclusion}
 
 
+\vspace{12pt}
+
 \begin{thebibliography}{00}
 \bibitem{b1} M. Sulami, I. Glatzer, R. Fattal and M. Werman, "Automatic recovery of the atmospheric light in hazy images," 2014 IEEE International Conference on Computational Photography (ICCP), Santa Clara, CA, USA, 2014, pp. 1-11.
 \bibitem{b2} D. Berman, T. Treibitz and S. Avidan, "Non-local Image Dehazing," 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, USA, 2016, pp. 1674-1682.
 \end{thebibliography}
 
-\vspace{12pt}
 
 \end{document}
