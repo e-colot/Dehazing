@@ -145,7 +145,87 @@ The threshold $\tau_1, \tau_2, \tau_3$ are initiated to keep more than 10 patche
 by step the thresholds until 10 patches remain.  These patches will be used for the airlight candidates determination.
 
 \section{Airlight magnitude determination}
-NIMA CHAN
+%%%%%%%%%%%%%%%%%%%%%%%%%
+In the continuity of recovering the clear scene radiance \( J(x) \) from a hazy image \( I(x) \), it is essential to determine the full atmospheric light vector \( A = \|A\|\hat{A} \). 
+Indeed, once the orientation of the atmospheric light vector has been found, we use the method described in \cite{airlight} to derive the airlight amplitude. The airlight being closely related to pixel brightness and transmission, estimating it will be more complex. The key idea is to exploit the empirical regularity that in natural hazy scenes, the brightness of the brightest pixels tends to be independent of their transmission. This regularity allows us to formulate an optimization procedure to estimate \( \|A\| \) robustly.
+
+\subsection{Initial Dehazing with Unit Amplitude}
+
+We begin by applying a dehazing function assuming a unit amplitude, i.e., \( \|A\| = 1 \). This provides an initial estimate of the transmission map \( t(x) \) and the dehazed image \( J(x) \).To analyze how image brightness varies with transmission, we compute a scalar brightness value \( l(x) \) at each pixel of the initially dehazed image \( J(x) \). This is done by taking the Euclidean norm of the RGB vector:
+\begin{equation}
+\label{initial_brightness }
+l(x) = \|J(x)\|_2 = \sqrt{J_R(x)^2 + J_G(x)^2 + J_B(x)^2}
+\end{equation}
+
+This is justified by the scene radiance model assumed in \cite{airlight}, where the dehazed image is decomposed as \( J(x) = l(x) R(x) \), with \( R(x) \) being the chromaticity (i.e., a unit-norm color vector) and \( l(x) \) being the scalar brightness. Since \( \|R(x)\|_2 = 1 \), it follows that \( \|J(x)\|_2 = l(x) \). Thus, taking the 2-norm of each pixel vector in \( J(x) \) directly recovers the brightness component. This brightness estimate plays a central role in constructing the percentile-based brightness statistic used later to estimate the airlight amplitude.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\subsection{Max-Brightness Invariance Statistic}
+Based on the per-pixel brightness \( l(x) \), we compute a transmission-dependent brightness statistic denoted by \( l^*_a(s) \). This function represents the 99th percentile of the brightness values \( l(x) \) among pixels that share a similar transmission value \( s \) \cite{airlight}. The motivation for using this statistic stems from a global regularity observed in natural hazy images \cite{airlight}: the brightness of the brightest pixels tends to remain approximately invariant across different transmission levels.
+\begin{equation}
+\label{brightness_statistic}
+l^*_a(s) = \text{percentile}_{99\%} \{ l(x) \mid t(x) = s \}
+\end{equation}
+To construct \( l^*_a(s) \), we begin by uniformly dividing the transmission range \([0, 1]\) into a fixed number of bins. Each bin is associated with a central transmission value \( s \). For each bin, we collect all pixels whose estimated transmission \( t(x) \) falls within a small interval centered around \( s \). Among these pixels, we extract the 99th percentile of the corresponding brightness values \( l(x) \). This process yields a curve \( l^*_a(s) \), which captures how the brightness of the brightest pixels varies as a function of transmission.
+
+In theory, if the correct atmospheric light magnitude \( \|A\| \) is used, this curve should be nearly flat, since the multiplicative brightness bias introduced by an incorrect \( \|A\| \)  would otherwise distort the brightness of the dehazed image depending on transmission. Thus, deviations from flatness in \( l^*_a(s) \) serve as a cue for detecting and correcting such amplitude errors. This principle underlies the subsequent optimization used to recover the correct airlight amplitude.
+
+\subsection{Optimization to Recover Amplitude}
+
+Assuming that the correct airlight amplitude yields a flat \( l^*_a(s) \), we define a cost function based on a theoretical transformation of transmission and brightness that occurs when using a wrong amplitude. The derivation of this transformation relies on a key assumption presented in the paper \cite{airlight} : even if the wrong amplitude \( \hat{a} \cdot \hat{A}\) is used in dehazing, the method still attempts to match the true airlight term, i.e.,
+
+\begin{equation}
+\label{matching_airlight}
+(1 - t_a(x)) \cdot aA = (1 - t(x)) \cdot A
+\end{equation}
+
+This assumption ensures preservation of the additive haze (airlight) component across different amplitude choices. Solving this equation for \( t_a(x) \), the transmission recovered under an incorrect amplitude, yields:
+
+\begin{equation}
+\label{recovered_transmission }
+t_a(x) = \frac{t(x) - 1}{a} + 1
+\end{equation}
+
+However, since the transmission and radiance must still balance the full image formation equation, this mismatch introduces a brightness bias into the recovered dehazed image. As shown in \cite{airlight}, this bias is captured in by a transmission-dependent factor:
+
+\begin{equation}
+\label{brightness_bias}
+\sigma_a(t) = \frac{a t}{t + a - 1}
+\end{equation}
+
+To recover the correct amplitude \( \hat{a} = \|A\| \), we minimize the squared error between the observed brightness statistic \( l^*_a(s) \) and the predicted scaled brightness \( \sigma_a(s) \cdot k \), using:
+
+\begin{equation}
+\label{optimisation}
+\min_{\hat{a}, k} \sum_s \left( l^*_a\left( \frac{s - 1}{\hat{a}} + 1 \right) - \sigma_\hat{a}(s) \cdot k \right)^2
+\end{equation}
+
+This non-linear least-squares problem is solved using numerical optimization. The optimal value of \( a \) is then used to reconstruct the full atmospheric light vector as \( A = a \cdot \hat{A} \).
+
+
+\subsection{Robustness and Final Estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+During optimization, we apply a remapping of transmission values defined by \( s_a = \frac{s - 1}{a} + 1 \). However, for small values of \( a \), this mapping can produce negative transmission levels \( s_a < 0 \), which are physically invalid and lead to undefined behavior during percentile interpolation. To address this, a correction step is implemented \cite{airlight}: if any remapped transmission value becomes negative, we slightly increase the norm of the airlight orientation vector \( \hat{A} \). This effectively raises the estimated airlight magnitude used during the initial dehazing, producing new estimates of \( J(x) \), \( t(x) \), and \( l^*_a(s) \) that are more stable. The optimization is then re-run with these updated statistics until all remapped values are valid. This step ensures the cost function remains well-defined over the domain of transmission bins.
+
+Finally, the estimated amplitude \( \hat{a} \) is multiplied by the orientation to form the complete atmospheric light vector:
+
+\begin{equation}
+\label{airlight}
+A = \hat{a} \cdot \hat{A}
+\end{equation}
+
+This estimation is crucial for ensuring that the dehazed image does not suffer from brightness artifacts related to incorrect atmospheric light scaling.
+
 \section{transmission range determination}
 The method described in \cite{dehaze} is based on a simple assumption: an image without any haze is often composed of a few dominant colours. This allows to regroup the pixels of the input image in a few clusters, each representing one of those dominant colours. Each pixel inside such cluster will be, according to Eq. (\ref{image_model}), between the dominant colour and the airlight vector determined previously. The transmission coefficient can then be computed by finding the distance between the pixel and the airlight vector.\par
 The clusters described previously are named \textit{haze-lines} in \cite{dehaze}. and are found by first centering the image around the airlight vector:
