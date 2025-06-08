@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  4 JUN 2025 15:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  9 JUN 2025 00:13
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -237,20 +237,20 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
 
 -- Lines per column: 56 (exact).
 (e:/TexLive/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -272,17 +272,17 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 46.
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 46.
  (e:/TexLive/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 
-Underfull \hbox (badness 2080) in paragraph at lines 91--95
+Underfull \hbox (badness 2080) in paragraph at lines 98--102
 []\OT1/ptm/m/it/10 Patch de-com-po-si-tion \OT1/ptm/m/n/10 As men-tioned pre-vi-ously, the
  []
 
@@ -293,55 +293,74 @@ Underfull \hbox (badness 2080) in paragraph at lines 91--95
 
 ]
 
-<img/hazeLine.png, id=18, 706.13812pt x 262.73157pt>
+
+
+[2]
+
+<img/hazeLine.png, id=24, 706.13812pt x 262.73157pt>
 File: img/hazeLine.png Graphic file (type png)
 <use img/hazeLine.png>
-Package pdftex.def Info: img/hazeLine.png  used on input line 172.
+Package pdftex.def Info: img/hazeLine.png  used on input line 267.
 (pdftex.def)             Requested size: 252.0pt x 93.76144pt.
 
 
-[2 <./img/hazeLine.png>]
-<img/noOpti.png, id=26, 740.0147pt x 255.20343pt>
+[3]
+<img/noOpti.png, id=29, 740.0147pt x 255.20343pt>
 File: img/noOpti.png Graphic file (type png)
 <use img/noOpti.png>
-Package pdftex.def Info: img/noOpti.png  used on input line 195.
+Package pdftex.def Info: img/noOpti.png  used on input line 290.
 (pdftex.def)             Requested size: 252.0pt x 86.9043pt.
-<img/opti.png, id=27, 730.98094pt x 252.945pt>
+
+
+<img/opti.png, id=30, 730.98094pt x 252.945pt>
 File: img/opti.png Graphic file (type png)
 <use img/opti.png>
-Package pdftex.def Info: img/opti.png  used on input line 210.
+Package pdftex.def Info: img/opti.png  used on input line 305.
 (pdftex.def)             Requested size: 252.0pt x 87.2005pt.
-<img/validation1.png, id=28, 1188.69093pt x 353.06906pt>
+<img/validation1.png, id=31, 1188.69093pt x 353.06906pt>
 File: img/validation1.png Graphic file (type png)
 <use img/validation1.png>
-Package pdftex.def Info: img/validation1.png  used on input line 223.
+Package pdftex.def Info: img/validation1.png  used on input line 320.
 (pdftex.def)             Requested size: 252.0pt x 74.84705pt.
-<img/validation2.png, id=29, 1388.18625pt x 280.04625pt>
+<img/validation2.png, id=32, 1388.18625pt x 280.04625pt>
 File: img/validation2.png Graphic file (type png)
 <use img/validation2.png>
-Package pdftex.def Info: img/validation2.png  used on input line 229.
+Package pdftex.def Info: img/validation2.png  used on input line 326.
 (pdftex.def)             Requested size: 252.0pt x 50.83345pt.
-<img/validation3.png, id=30, 1559.07469pt x 316.18124pt>
+<img/validation3.png, id=33, 1559.07469pt x 316.18124pt>
 File: img/validation3.png Graphic file (type png)
 <use img/validation3.png>
-Package pdftex.def Info: img/validation3.png  used on input line 235.
+Package pdftex.def Info: img/validation3.png  used on input line 332.
 (pdftex.def)             Requested size: 252.0pt x 51.10143pt.
-<img/denser_haze.png, id=31, 836.3747pt x 286.06876pt>
+<img/denser_haze.png, id=34, 836.3747pt x 286.06876pt>
 File: img/denser_haze.png Graphic file (type png)
 <use img/denser_haze.png>
-Package pdftex.def Info: img/denser_haze.png  used on input line 242.
+Package pdftex.def Info: img/denser_haze.png  used on input line 339.
 (pdftex.def)             Requested size: 252.0pt x 86.1923pt.
 
 
-<img/distance_mapping.png, id=32, 850.67813pt x 295.1025pt>
+[4 <./img/hazeLine.png> <./img/noOpti.png> <./img/opti.png>]
+<img/distance_mapping.png, id=42, 850.67813pt x 295.1025pt>
 File: img/distance_mapping.png Graphic file (type png)
 <use img/distance_mapping.png>
-Package pdftex.def Info: img/distance_mapping.png  used on input line 253.
+Package pdftex.def Info: img/distance_mapping.png  used on input line 350.
 (pdftex.def)             Requested size: 252.0pt x 87.4192pt.
+<img/validation4.png, id=43, 503.63156pt x 194.97844pt>
+File: img/validation4.png Graphic file (type png)
+<use img/validation4.png>
+Package pdftex.def Info: img/validation4.png  used on input line 356.
+(pdftex.def)             Requested size: 252.0pt x 97.56036pt.
+<img/validation5.png, id=44, 766.36313pt x 300.3722pt>
+File: img/validation5.png Graphic file (type png)
+<use img/validation5.png>
+Package pdftex.def Info: img/validation5.png  used on input line 362.
+(pdftex.def)             Requested size: 252.0pt x 98.7702pt.
 
 
-[3 <./img/noOpti.png> <./img/opti.png> <./img/validation1.png> <./img/validation2.png> <./img/validation3.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 267--268
+
+
+[5 <./img/validation1.png> <./img/validation2.png> <./img/validation3.png> <./img/denser_haze.png> <./img/distance_mapping.png> <./img/validation4.png> <./img/validation5.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 381--382
 \OT1/ptm/m/n/8 Avail-able: $https : / / github . com / danaberman / non-[]local-[]dehazing$.
  []
 
@@ -360,27 +379,27 @@ Before submitting the final camera ready copy, remember to:
 
 
 
-[4
+[6
 
- <./img/denser_haze.png> <./img/distance_mapping.png>] (./main.aux)
+] (./main.aux)
  ***********
 LaTeX2e <2024-11-01>
 L3 programming layer <2024-11-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4346 strings out of 473362
- 68366 string characters out of 5720994
- 476166 words of memory out of 5000000
- 27412 multiletter control sequences out of 15000+600000
- 594890 words of font info for 110 fonts, out of 8000000 for 9000
+ 4382 strings out of 473362
+ 69075 string characters out of 5720994
+ 479510 words of memory out of 5000000
+ 27445 multiletter control sequences out of 15000+600000
+ 598799 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,8n,65p,651b,338s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,9n,65p,1000b,338s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (4 pages, 4711884 bytes).
+Output written on main.pdf (6 pages, 5161970 bytes).
 PDF statistics:
- 115 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 125 PDF objects out of 1000 (max. 8388607)
+ 64 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

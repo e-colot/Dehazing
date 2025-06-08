@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage{url}
 
+\DeclareMathOperator*{\argmin}{\arg\!\min}
 
 \begin{document}
 
@@ -66,7 +67,9 @@ The contrast attenuation and the ambient colour corruption can be highlighted by
 $\mathbf{I}(\mathbf{x})$ being the input image, the dehazing process is reduced to find the transmission and the global airlight parameters to recompose
 the true radiance scenery.  This process can be decomposed in three steps : determining the airlight vector direction, finding its magnitude and finally computing the transmission coefficient.
 
-\section{Airlight vector determination}  
+\section{Algorithm description}
+\subsection{Airlight vector orientation}  
+\label{AmauryPart}
 
 Even if the algorithm is indeed based on the equation (\ref{image_model}), it uses a reformulation of it \cite{airlight}:
 
@@ -85,41 +88,40 @@ vector.  By finding patches composed of pixels fulfilling the previous constrain
 varying in function of the coefficient $l(\mathbf{x})$ - function of the normal direction of the surfaces/pixels.  By representing these pixels in the RGB 3D space, it is possible to construct, for each patch, the line $\mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + \mathbf{C}$ 
 with $\mathbf{C}$ a constant equals to $c_i \mathbf{A}$ ($c_i$ assumed to be constant in the patch area considering the smoothness of the scene radiance for outdoor pictures).
 The funding idea of the algorithm is that the constructed line will intersect the airlight vector in the RGB space when $l(\mathbf{x}) = 0$.
-Constructing planes formed by the patches lines passing by the origin and intersecting the planes by pairs will lead to the
-determination of the airlight vector candidates which ultimately will result to the dehazing of the image.
+Constructing planes formed by the patches lines passing through the origin and intersecting the planes by pairs will lead to the
+determination of the airlight vector candidates.
 
-The importance of the airlight vector has been introduced in the introduction and we will now move to its computation.
+The importance of the airlight vector has been introduced previously and we will now move to its computation.
 the first part will be focused on the determination of the orientation of the airlight vector - the magnitude calculation is done 
 in the second part of the algorithm. The vector orientation can be calculated in 7 steps:
 \begin{itemize}[\IEEEsetlabelwidth{vi}]
 \item[i] \textit{Patch decomposition} As mentioned previously, the airlight vector can be calculated through local patches processing. 
 Thus the initial step is to generate these local patches from the image. The size of those patches is set to $10 \times 10$ pixels, which leads to optimal results for most cases \cite{airlight}. Only patches with smooth variations
 should be kept avoiding rough colour distortion within a patch which will affect the colour line vector calculation.  Therefore, Canny
-algorithm is run upstream detecting patches with edges and getting rid of them for next steps.
-\item[ii] \textit{Main principal component analysis} The construction of the patch lines, or patch vectors, are calculated by computing the principal component analysis (PCA) resulting to the eigenvectors computation and their
-associated eigenvalues.  The patch vectors are defined by the largest PCA with its origin at the centroïd of the patch pixels.
-The PCA is performed 2 times to be exact.  We construct first the patch line by considering all the pixels and aftewards the 20 \% farthest
+edge detection is run upstream to discard patches with edges for the next steps.
+\item[ii] \textit{Main principal component analysis} The construction of the patch lines, or patch vectors, is done by computing the principal component analysis (PCA) resulting to the eigenvectors computation and their
+associated eigenvalues ($\lambda_1 \geq \lambda_2 \geq \lambda_3$).  The patch vectors are defined by the largest PCA with its origin at the centroïd of the patch pixels.
+The PCA is performed 2 times to be exact. We construct first the patch line by considering all the pixels and afterwards the 20 \% farthest
 pixels from the first estimated line are discarded and we recompute the vector.  
 \item[iii] \textit{Eigenvalue comparison} Once the first filter with Canny has been applied and the patches lines have been computed, 
 a second filtering is performed.  To ensure that the patch lines are resulting from a collection of pixel showing a 1D variability 
-along the variation of the shading coefficient $l(\mathbf{x})$, we set threshold regarding the main eigenvalue.
-First the main eigenvalue should be higher than a threshold $\tau_1$ ensuring being high enough - $\lambda_1 > \tau_1$. 
-Secondly, the ratio between the main eigenvalue and the sub ones should be higher than a threshold $\tau_2$ - $\frac{\lambda_1}{\lambda_2} > \tau_2$ - 
+along the variation of the shading coefficient $l(\mathbf{x})$, we set a condition on the minimal main eigenvalue.
+It should be higher than a threshold $\tau_1$ - $\lambda_1 > \tau_1$. 
+The ratio between the main eigenvalue and the sub ones should also be above another threshold $\tau_2$ - $\frac{\lambda_1}{\lambda_2} > \tau_2$ - 
 ensuring a high linearity.
 \item[iv] \textit{Distance to origin} After collecting patch lines with a high main PCA, we need to ensure that the patch lines 
-comply with another criteria related to the distance from the patch vector and the origin of RGB space.
-If the eigenvector passes by the origin or close to the origin, it would mean that the pixels within the patches would be not 
-affected by the global airlight and thus would not contain valuable information to reconstruct the airligth vector.  
-The distance from the origin should therefore be higher than a threshold $\tau_3$.  The distance from the eingenvector to the origin
-can be computed through the cross product as follow.
+comply with another criterion related to the distance from the patch vector and the origin of RGB space. 
+An eigenvector passing by the origin, or close to it, corresponds to a patch line composed of pixels that are not affected by the airlight and are thus not valuable for the airlight vector computation.
+The distance from the origin should therefore be higher than a threshold $\tau_3$.  The distance from the eigenvector to the origin
+is computed through the cross product as follows:
 
 \begin{equation}
 \label{Distance to origin}
 dist_{0,0} = \frac{||\vec{v_{eig}} \times \vec{\mu}||}{||\vec{v_{eig}}||}
 \end{equation}
 
-where $v_{eig}$ is the eigenvector and $\mu$ the centroid of the pixels withtin the local patch.
-Additional filtering should be done to ensure that all the valid pacthes eigenvector contains only non negative components being 
+where $\vec{v_{eig}}$ is the eigenvector and $\mu$ the centroid of the pixels within the local patch.
+Additional filtering should be done to ensure that all the valid patches eigenvector contains only non negative components being 
 not representative of outdoor reflective light $l(x)R_i$.
 
 \item[v] \textit{Eigenvector angles threshold} Finally, we need to discard the patch leading to similar patch lines which would result 
@@ -136,31 +138,32 @@ We first construct the plane defined with the patch vector and passing by the or
 
 \begin{equation}
 \label{airlight_candidate}
-\vec{\text{Â}}_{cand} = \frac{\vec{n_i} \times \vec{n_j}}{||\vec{n_i} \times \vec{n_j}||} 
+\vec{\hat{A}}_{\text{cand}} = \frac{\vec{n_i} \times \vec{n_j}}{||\vec{n_i} \times \vec{n_j}||} 
 \end{equation}
 
-where $n_i, n_j$ are normal vector from the {centroid x patch line} plane and $\text{Â}_{cand}$ the airlight vector.
-\item[vii] \textit{Minimal distance for Â determination} Finally, each potential airlight candidate is compared by 
-computing the Euclidian distance between the considered candidate and the patch lines.  The lowest median distance candidate is selected as 
+where $\vec{n_i}, \vec{n_j}$ are normal vector from the {centroid $\times$ patch line} plane and $\vec{\hat{A}}_{\text{cand}}$ the airlight vector.
+\item[vii] \textit{Minimal distance for $\vec{\hat{A}}$ determination} Finally, each potential airlight candidate is compared by
+computing the Euclidean distance between the considered candidate and the patch lines.  The lowest median distance candidate is selected as
 the best fit vector.  Mathematically, it gives the equation (\ref{airlight_vector}).
 
 \begin{equation}
 \label{airlight_vector}
-\vec{\text{Â}}_{vector} = argmin_j(median_i(d_{ij})) 
+\vec{\hat{A}}_{\text{vector}} = \argmin_j(median_i(d_{ij})) 
 \end{equation}
 
-where $d_{ij}$ is the Euclidian distance between the $j$-th airlight candidate $\text{Â}_{cand}$ and the $i$-th patch line.
+where $d_{ij}$ is the euclidean distance between the $j$-th airlight candidate $\vec{\hat{A}}_{\text{cand}}$ and the $i$-th patch line.
 \end{itemize}   
 
 Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep more than 10 patches and are afterwards refined by increasing step
 by step the thresholds until 10 patches remain.  These patches are used for the airlight candidates computation at the point vi.
 
-\section{Airlight magnitude determination}
+\subsection{Airlight vector magnitude}
+\label{NimaPart}
 %%%%%%%%%%%%%%%%%%%%%%%%%
 In the continuity of recovering the clear scene radiance \( J(x) \) from a hazy image \( I(x) \), it is essential to determine the full atmospheric light vector \( A = \|A\|\hat{A} \). 
 Indeed, once the orientation of the atmospheric light vector has been found, we use the method described in \cite{airlight} to derive the airlight amplitude. The airlight being closely related to pixel brightness and transmission, estimating it will be more complex. The key idea is to exploit the empirical regularity that in natural hazy scenes, the brightness of the brightest pixels tends to be independent of their transmission. This regularity allows us to formulate an optimization procedure to estimate \( \|A\| \) robustly.
 
-\subsection{Initial Dehazing with Unit Amplitude}
+\subsubsection{Initial Dehazing with Unit Amplitude}
 
 We begin by applying a dehazing function assuming a unit amplitude, i.e., \( \|A\| = 1 \). This provides an initial estimate of the transmission map \( t(x) \) and the dehazed image \( J(x) \).To analyze how image brightness varies with transmission, we compute a scalar brightness value \( l(x) \) at each pixel of the initially dehazed image \( J(x) \). This is done by taking the Euclidean norm of the RGB vector:
 \begin{equation}
@@ -178,7 +181,7 @@ This is justified by the scene radiance model assumed in \cite{airlight}, where 
 
 
 
-\subsection{Max-Brightness Invariance Statistic}
+\subsubsection{Max-Brightness Invariance Statistic}
 Based on the per-pixel brightness \( l(x) \), we compute a transmission-dependent brightness statistic denoted by \( l^*_a(s) \). This function represents the 99th percentile of the brightness values \( l(x) \) among pixels that share a similar transmission value \( s \) \cite{airlight}. The motivation for using this statistic stems from a global regularity observed in natural hazy images \cite{airlight}: the brightness of the brightest pixels tends to remain approximately invariant across different transmission levels.
 \begin{equation}
 \label{brightness_statistic}
@@ -188,7 +191,7 @@ To construct \( l^*_a(s) \), we begin by uniformly dividing the transmission ran
 
 In theory, if the correct atmospheric light magnitude \( \|A\| \) is used, this curve should be nearly flat, since the multiplicative brightness bias introduced by an incorrect \( \|A\| \)  would otherwise distort the brightness of the dehazed image depending on transmission. Thus, deviations from flatness in \( l^*_a(s) \) serve as a cue for detecting and correcting such amplitude errors. This principle underlies the subsequent optimization used to recover the correct airlight amplitude.
 
-\subsection{Optimization to Recover Amplitude}
+\subsubsection{Optimization to Recover Amplitude}
 
 Assuming that the correct airlight amplitude yields a flat \( l^*_a(s) \), we define a cost function based on a theoretical transformation of transmission and brightness that occurs when using a wrong amplitude. The derivation of this transformation relies on a key assumption presented in the paper \cite{airlight} : even if the wrong amplitude \( \hat{a} \cdot \hat{A}\) is used in dehazing, the method still attempts to match the true airlight term, i.e.,
 
@@ -214,14 +217,14 @@ However, since the transmission and radiance must still balance the full image f
 To recover the correct amplitude \( \hat{a} = \|A\| \), we minimize the squared error between the observed brightness statistic \( l^*_a(s) \) and the predicted scaled brightness \( \sigma_a(s) \cdot k \), using:
 
 \begin{equation}
-\label{optimisation}
-\min_{\hat{a}, k} \sum_s \left( l^*_a\left( \frac{s - 1}{\hat{a}} + 1 \right) - \sigma_\hat{a}(s) \cdot k \right)^2
+    \label{optimisation}
+    \min_{\hat{a},\, k} \sum_s \Bigl( l^*_{\hat{a}}\bigl( \frac{s - 1}{\hat{a}} + 1 \bigr) - \sigma_{\hat{a}}(s) \cdot k \Bigr)^2
 \end{equation}
 
 This non-linear least-squares problem is solved using numerical optimization. The optimal value of \( a \) is then used to reconstruct the full atmospheric light vector as \( A = a \cdot \hat{A} \).
 
 
-\subsection{Robustness and Final Estimation}
+\subsubsection{Robustness and Final Estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -237,7 +240,8 @@ A = \hat{a} \cdot \hat{A}
 
 This estimation is crucial for ensuring that the dehazed image does not suffer from brightness artifacts related to incorrect atmospheric light scaling.
 
-\section{transmission range determination}
+\subsection{Transmission coefficient}
+\label{EmmeranPart}
 The method described in \cite{dehaze} is based on a simple assumption: an image without any haze is often composed of a few dominant colours. This allows to regroup the pixels of the input image in a few clusters, each representing one of those dominant colours. Each pixel inside such cluster will be, according to Eq. (\ref{image_model}), between the dominant colour and the airlight vector determined previously. The transmission coefficient can then be computed by finding the distance between the pixel and the airlight vector.\par
 The clusters described previously are named \textit{haze-lines} in \cite{dehaze}. and are found by first centering the image around the airlight vector:
 \begin{equation}
@@ -292,7 +296,7 @@ To have a smoother transmission coefficient, the authors of \cite{dehaze} propos
     \label{eq:cost_function}
     C(\tilde{t}) = \sum_{\mathbf{x}} \frac{\left[\hat{t}(\mathbf{x}) - \tilde{t}(\mathbf{x})\right]^2}{\sigma^2(\mathbf{x})} + \lambda \sum_{\mathbf{x}} \sum_{\mathbf{y} \in N_{\mathbf{x}}} \frac{\left[\hat{t}(\mathbf{x}) - \hat{t}(\mathbf{y})\right]^2}{||\mathbf{I}(\mathbf{x}) - \mathbf{I}(\mathbf{y})||^2}
 \end{equation}
-Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission coefficient and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighbourhood of $\mathbf{x}$.\\
+Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission coefficient and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighborhood of $\mathbf{x}$.\\
 The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission coefficient close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission coefficient of neighbouring pixels, thus enforcing the smoothness constraint. 
 The optimization is done using a weighted least squares optimizer provided in \cite{github}. The weights are chosen in a way that penalizes haze-lines with a low number of pixels, which avoids such haze-lines to have a large influence on the final transmission coefficient. The weights also depends on the standard deviation of $r(\mathbf{x})$ to give less importance to haze-lines with a large spread. \par
 The optimal transmission coefficient $\hat{t}(\mathbf{x})$ is then computed with $\lambda = 0.1$ and gives a smooth transmission coefficient as shown in Fig. \ref{fig:final_transmission}. 
@@ -302,12 +306,14 @@ The optimal transmission coefficient $\hat{t}(\mathbf{x})$ is then computed with
     \caption{Final transmission estimate.  The left image is the original image and the transmission coefficient estimate, after optimization, is on the right.}
     \label{fig:final_transmission}
 \end{figure}
+
+\subsection{Dehazing}
 The final step is to recover the true radiance $\mathbf{J}(\mathbf{x})$ using the computed transmission coefficient and the airlight vector with Eq. (\ref{image_model}):
 \begin{equation}
     \mathbf{J}(\mathbf{x}) = \frac{\mathbf{I}(\mathbf{x}) - (1 - \hat{t}(\mathbf{x})) \cdot \mathbf{A}}{\hat{t}(\mathbf{x})}
 \end{equation}
 
-\section{Validation}
+\section{Experimental results}
 The whole algorithm has been used on several images as can be seen in Fig. (\ref{validation1}, \ref{validation2}, \ref{validation3}).
 \begin{figure}
     \centering
@@ -327,7 +333,7 @@ The whole algorithm has been used on several images as can be seen in Fig. (\ref
     \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image on which a histogram stretching has been applied.}
     \label{validation3}
 \end{figure}
-Fig. \ref{validation3} shows that the algorithm is able to work even for images with a lot of haze. Insterad of removing haze, we can also increase it by applying Eq. (\ref{image_model}) in which the transmission coefficient is multiplied by a factor smaller than 1. This is shown in Fig. \ref{denser_haze} where the transmission coefficient is multiplied by 0.5.
+Fig. \ref{validation3} shows that the algorithm is able to work even for images with a lot of haze. Instead of removing haze, we can also increase it by applying Eq. (\ref{image_model}) in which the transmission coefficient is multiplied by a factor smaller than 1. This is shown in Fig. \ref{denser_haze} where the transmission coefficient is multiplied by 0.5.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/denser_haze.png}
@@ -345,9 +351,26 @@ where $\beta$ is the wave phase number. A distance mapping is shown in Fig. \ref
     \caption{Distance mapping of the scene points. The left image is the original image and the right one is the distance mapping.}
     \label{distance_mapping}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation4.png}
+    \caption{Case of a very hazy image, causing trouble to the algorithm. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \label{validation4}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation5.png}
+    \caption{Comparison of the dehazing algorithm with the implementation of \cite{github}. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \label{validation5}
+\end{figure}
+
+It must be noted that the algorithm is not perfect and can fail in some cases. Fig. \ref{validation4} shows an example of such images. The dehazed image looks satisfactory but the transmission coefficient is not precise and could certainly not be used for distance estimation. The implemented version of \cite{github} gives better results, as shown in Fig. \ref{validation5}. This is because our implementation uses a different method to compute the airlight vector.
 
 \section{Conclusion}
 
+In this report, we implemented and analyzed a fully automatic single-image dehazing pipeline based on the methods proposed in \cite{airlight} and \cite{dehaze}. The algorithm successfully decomposes a hazy image into its physical components: the atmospheric light vector and the scene transmission, allowing us to reconstruct a visually clearer estimate of the original radiance.
+We showed how the orientation and magnitude of the atmospheric light vector can be reliably recovered by analyzing small image patches and using global brightness regularities. We also demonstrated how haze-lines in the RGB color space can be used to extract transmission estimates, which are then refined through spatial optimization to enforce continuity. This leads to more natural dehazed images and enables downstream applications such as depth estimation and haze augmentation.
+Validation results confirm that the algorithm performs well under a variety of hazy conditions, and its modular structure makes it adaptable for further improvements or integration into real-world image enhancement systems. Overall, this project highlights the effectiveness of combining physical modeling with statistical priors to solve challenging inverse problems in computer vision.
 
 \vspace{12pt}
 
@@ -357,5 +380,24 @@ where $\beta$ is the wave phase number. A distance mapping is shown in Fig. \ref
 \bibitem{github}
 D. Berman, non-local-dehazing, GitHub repository, 2018. [Online]. Available: \url{https://github.com/danaberman/non-local-dehazing}. [Accessed: May 31, 2025].
 \end{thebibliography}
+
+\begin{table}[h]
+\centering
+\caption{Contributions of each group member}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Name} & \textbf{Contributions} \\
+\hline
+Arico Amaury & Airlight orientation (\ref{AmauryPart}) -- report \& code \\ 
+& Introduction -- report\\
+\hline
+Colot Emmeran & Transmission (\ref{EmmeranPart}) -- report \& code \\ 
+& Experimental results -- report\\
+\hline
+Khansir Nima & Airlight magnitude (\ref{NimaPart}) -- report \& code \\ 
+& Conclusion -- report\\
+\hline
+\end{tabular}
+\end{table}
 
 \end{document}

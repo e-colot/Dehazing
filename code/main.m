@@ -1,6 +1,6 @@
 clear; close all; clc;
 
-image = im2double(imread('./../srcImages/hazy7.png'));
+image = im2double(imread('./../srcImages/hazy4.jpg'));
 
 Ahat = AirlightDirection(image);
 
@@ -10,7 +10,7 @@ disp("End of airlight amplitude estimation");
 % figure;
 % imshow(reshape(A, 1, 1, 3), InitialMagnification=10000);
 % title('Estimated Airlight Color A');
-
+A = Ahat;
 [output, transmission] = dehazeHazeLines(image, A);
 
 % denser fog
@@ -24,49 +24,13 @@ distance = distance - min(distance(:));
 distance = distance / max(distance(:)); % Normalize to [0, 1]
 
 figure;
-subplot(121);
+subplot(1, 3, 1);
 imshow(image);
-title('Original Image');
-subplot(122);
-imshow(distance);
-colormap('jet');
-title('Distance Map');
-% figure;
-% subplot(221);
-% imshow(image); 
-% title('Original Image');
-% subplot(222);
-% imshow(output);
-% title('Dehazed Image');
-% subplot(223);
-% imshow(transmission, []);
-% colormap('jet');
-% title('Estimated Transmission Map');
-% subplot(224);
-% imshow(denser);
-% title('Denser Fog Simulation');
-
-% figure;
-% subplot(131);
-% imshow(image);
-% title('Input image');
-% subplot(132);
-% imshow(transmission);
-% colormap('jet');
-% title('Estimated transmission');
-% subplot(133);
-% imshow(output);
-% title('Dehazed image');
-
-
-% figure;
-% subplot(131);
-% imshow(image);
-% title('Input image');
-% subplot(132);
-% imshow(transmission);
-% colormap('jet');
-% title('Estimated transmission');
-% subplot(133);
-% imshow(stretched);
-% title('Stretched dehazed image');
+title('Original Hazy Image');
+subplot(1, 3, 2);
+imshow(output);
+title('Dehazed Image');
+subplot(1, 3, 3);
+imshow(transmission);
+colormap("jet");
+title('Estimated Transmission Map');
