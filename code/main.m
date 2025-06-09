@@ -5,12 +5,8 @@ image = im2double(imread('./../srcImages/hazy4.jpg'));
 Ahat = AirlightDirection(image);
 
 A = airlightAmplitude(image, Ahat);
-disp("End of airlight amplitude estimation");
 
-% figure;
-% imshow(reshape(A, 1, 1, 3), InitialMagnification=10000);
-% title('Estimated Airlight Color A');
-A = Ahat;
+
 [output, transmission] = dehazeHazeLines(image, A);
 
 % denser fog
