@@ -1,6 +1,6 @@
 clear; close all; clc;
 
-image = im2double(imread('./../srcImages/hazy1.png'));
+image = im2double(imread('./../srcImages/hazy4.jpg'));
 
 Ahat = AirlightDirection(image);
 
@@ -34,3 +34,15 @@ subplot(2, 2, 4);
 imshow(distance);
 colormap("jet");
 title('Distance Map');
+
+figure;
+subplot(1, 3, 1);
+imshow(image);
+title('input image');
+subplot(1, 3, 2);
+imshow(transmission);
+colormap("jet");
+title('Estimated transmission');
+subplot(1, 3, 3);
+imshow(output);
+title('Dehazed image');
