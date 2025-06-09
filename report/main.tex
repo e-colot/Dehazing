@@ -148,14 +148,14 @@ the best fit vector.  Mathematically, it gives the equation (\ref{airlight_vecto
 
 \begin{equation}
 \label{airlight_vector}
-\vec{\hat{A}}_{\text{vector}} = \argmin_j(median_i(d_{ij})) 
+\vec{\hat{A}}_{\text{vector}} = \argmin_j(\operatorname{median}_i(d_{ij})) 
 \end{equation}
 
 where $d_{ij}$ is the euclidean distance between the $j$-th airlight candidate $\vec{\hat{A}}_{\text{cand}}$ and the $i$-th patch line.
 \end{itemize}   
 
-Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep a significant number of patches (higher than 10) and are afterwards refined by increasing step
-by step the thresholds until 10 patches remain.  These patches are used for the airlight candidates computation at the point vi.
+Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep a significant number of patches (higher than 20) and are afterwards refined by increasing step
+by step the thresholds until 30 patches remain.  These patches are used for the airlight candidates computation at the point vi.
 
 \subsection{Airlight vector magnitude}
 \label{NimaPart}
