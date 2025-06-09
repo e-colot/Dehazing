@@ -27,8 +27,8 @@
 \maketitle
 
 \begin{abstract}
-Outdoor images are affected by atmospheric visibility reduction, particularly haze. The hazing effect is influenced by several 
-factors including location, weather, pollution level and other geographic and environmental parameters. Visibility degradation depends on the distance between the camera and the scene points. Literature shares various algorithms to dehaze outdoor 
+Outdoor images are affected by reduced atmospheric visibility, particularly due to haze. The hazing effect is influenced by several 
+factors including location, weather, pollution level and other geographic and environmental parameters. This visibility degradation depends on the distance between the camera and the scene points. Literature shares various algorithms to dehaze outdoor 
 images.  As part of the image processing project, our group will apply an algorithm performing a dehazing process requiring
 one single input developed by scientists from Hebrew University of Jerusalem \cite{airlight} \cite{dehaze}. By delimiting and exploiting local patches from this single input, the global airlight vector - the atmospheric
 colour - and the transmission gradient - the hazing reduction coefficient - are extracted.  Through this report, we will describe 
@@ -39,9 +39,9 @@ original pictures.
 \section{Introduction}
 
 Haze, visibility reduction phenomenon, is coming from the presence in the atmosphere of particles scattering the ambient 
-light, attenuating the contrast for outdoor images and corrupting the true radiance of the scenery by a ambient colour.
+light, attenuating the contrast for outdoor images and corrupting the true radiance of the scenery with an ambient colour cast.
 Most dehazing algorithms are performed based on the RGB representation of the images.
-The haze effect is commonly modelled by the following equation \cite{airlight}:
+The haze effect is commonly modeled by the following equation \cite{airlight}:
 
 \begin{equation}
 \label{image_model}
@@ -50,7 +50,7 @@ The haze effect is commonly modelled by the following equation \cite{airlight}:
 
 where $\mathbf{x}$ is the pixel position, $\mathbf{I}$ is the pixel colour under hazing condition or in other words, the image input, $\mathbf{A}$ is the ambient light colour,
 $\mathbf{J}$ the true pixel radiance, $t$ is the transmission coefficient ranging from 0 (airlight colour)
-to 1 (true colour), which is distance-dependent. It is defined by \cite{dehaze} as:
+to 1 (true colour), which is distance-dependent. It is defined in \cite{dehaze} as follows:
 
 \begin{equation}
 \label{scattering_coefficient}
@@ -58,14 +58,14 @@ t(\mathbf{x}) = e^{-\beta d(\mathbf{x})}
 \end{equation}
 
 where $\beta$ is the wave phase number and $d(\textbf{x})$ the scene pixel distance from the camera.  From equation (\ref{scattering_coefficient}),
-one can observe $t(\mathbf{x})$ is dependent on the wavelength and is thus different for each colour component.  Nevertheless, the used algorithm assume a constant matting gradient $t(\mathbf{x})$ for each colour channel.
-The contrast attenuation and the ambient colour corruption can be highlighted by breaking the equation (\ref{image_model}) in two distinct parts: 
+one can observe $t(\mathbf{x})$ is dependent on the wavelength and is thus different for each colour component.  Nevertheless, the algorithm used assumes a constant matting gradient $t(\mathbf{x})$ for each colour channel.
+The contrast attenuation and the ambient colour corruption can be understood by breaking the equation (\ref{image_model}) into two distinct parts: 
 \begin{itemize}
     \item $t(\mathbf{x}) \mathbf{J}(\mathbf{x})$, the true radiance component,
     \item $(1-t(\mathbf{x})) \mathbf{A}$, the ambient light effect.
 \end{itemize}
 $\mathbf{I}(\mathbf{x})$ being the input image, the dehazing process is reduced to find the transmission and the global airlight parameters to recompose
-the true radiance scenery.  This process can be decomposed in three steps : determining the airlight vector direction, finding its magnitude and finally computing the transmission coefficient.
+the true radiance scenery.  This process can be broken down into three steps determining the airlight vector direction, finding its magnitude and finally estimating the transmission map.
 
 \section{Algorithm description}
 \subsection{Airlight vector orientation}  
@@ -78,41 +78,40 @@ Even if the algorithm is indeed based on the equation (\ref{image_model}), it us
 \mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + c_i \mathbf{A}
 \end{equation}
 
-Where $l(\mathbf{x})$ expresses the shading coefficient related to the angle between the normal direction of the scene surface and
+Where $l(\mathbf{x})$ expresses the shading coefficient or the scalar brightness related to the angle between the normal direction of the scene surface and
 the light source direction, $R_i$ is the true radiance and $c_i$, the ambient light coefficient $(1-t(\mathbf{x}))$.
 The airlight determination method described in \cite{airlight} is a local patch-based algorithm meaning the image is decomposed on patches on which information is
 gleaned after image treatment.  The patches should obey to specific conditions : it should be composed of pixels with same
-true radiance and with constant transmission coefficient. In other words, the patches are composed of pixel of same true colour and affected
+true radiance and a constant transmission coefficient. In other words, the patches are composed of pixel of same true colour and affected
 by the same haze intensity effect. The motivation behind this decomposition lies in the retrieval of the airlight
 vector.  By finding patches composed of pixels fulfilling the previous constraints, we gather group of pixels with colour magnitude
 varying in function of the coefficient $l(\mathbf{x})$ - function of the normal direction of the surfaces/pixels.  By representing these pixels in the RGB 3D space, it is possible to construct, for each patch, the line $\mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + \mathbf{C}$ 
 with $\mathbf{C}$ a constant equals to $c_i \mathbf{A}$ ($c_i$ assumed to be constant in the patch area considering the smoothness of the scene radiance for outdoor pictures).
-The funding idea of the algorithm is that the constructed line will intersect the airlight vector in the RGB space when $l(\mathbf{x}) = 0$.
-Constructing planes formed by the patches lines passing through the origin and intersecting the planes by pairs will lead to the
-determination of the airlight vector candidates.
+The foundational idea of the algorithm is that the constructed line will intersect the airlight vector in the RGB space when $l(\mathbf{x}) = 0$.
+Constructing planes formed by the patch lines passing through the origin and intersecting pairs of these planes leads to the determination of the airlight vector candidates.
 
 The importance of the airlight vector has been introduced previously and we will now move to its computation.
 the first part will be focused on the determination of the orientation of the airlight vector - the magnitude calculation is done 
-in the second part of the algorithm. The vector orientation can be calculated in 7 steps:
+in the second part of the algorithm. The vector orientation is calculated in seven steps:
 \begin{itemize}[\IEEEsetlabelwidth{vi}]
 \item[i] \textit{Patch decomposition} As mentioned previously, the airlight vector can be calculated through local patches processing. 
-Thus the initial step is to generate these local patches from the image. The size of those patches is set to $10 \times 10$ pixels, which leads to optimal results for most cases \cite{airlight}. Only patches with smooth variations
+Thus the initial step is to generate these local patches from the image. The size of those patches is set to $10 \times 10$ pixels, which typically yields optimal results \cite{airlight}. Only patches with smooth variations
 should be kept avoiding rough colour distortion within a patch which will affect the colour line vector calculation.  Therefore, Canny
 edge detection is run upstream to discard patches with edges for the next steps.
 \item[ii] \textit{Main principal component analysis} The construction of the patch lines, or patch vectors, is done by computing the principal component analysis (PCA) resulting to the eigenvectors computation and their
-associated eigenvalues ($\lambda_1 \geq \lambda_2 \geq \lambda_3$).  The patch vectors are defined by the largest PCA with its origin at the centroïd of the patch pixels.
-The PCA is performed 2 times to be exact. We construct first the patch line by considering all the pixels and afterwards the 20 \% farthest
+associated eigenvalues ($\lambda_1 \geq \lambda_2 \geq \lambda_3$).  The patch vectors are defined by the largest PCA with its origin at the centroid of the patch pixels.
+The PCA is performed twice, to be exact. We construct first the patch line by considering all the pixels and afterwards the 20 \% farthest
 pixels from the first estimated line are discarded and we recompute the vector.  
 \item[iii] \textit{Eigenvalue comparison} Once the first filter with Canny has been applied and the patches lines have been computed, 
-a second filtering is performed.  To ensure that the patch lines are resulting from a collection of pixel showing a 1D variability 
-along the variation of the shading coefficient $l(\mathbf{x})$, we set a condition on the minimal main eigenvalue.
+a second filtering is performed.  To ensure that the patch lines are resulting from a collection of pixel exhibiting a strong 1D variability 
+along the variation of the brightness coefficient $l(\mathbf{x})$, we set a condition on a minimal main eigenvalue.
 It should be higher than a threshold $\tau_1$ - $\lambda_1 > \tau_1$. 
-The ratio between the main eigenvalue and the sub ones should also be above another threshold $\tau_2$ - $\frac{\lambda_1}{\lambda_2} > \tau_2$ - 
-ensuring a high linearity.
+The ratio between the main eigenvalue and the sub ones should also be above a second threshold $\tau_2$ - $\frac{\lambda_1}{\lambda_2} > \tau_2$ - 
+ensuring a high linear pixel colour distribution - prerequisite to a reliable patch line estimation.
 \item[iv] \textit{Distance to origin} After collecting patch lines with a high main PCA, we need to ensure that the patch lines 
 comply with another criterion related to the distance from the patch vector and the origin of RGB space. 
 An eigenvector passing by the origin, or close to it, corresponds to a patch line composed of pixels that are not affected by the airlight and are thus not valuable for the airlight vector computation.
-The distance from the origin should therefore be higher than a threshold $\tau_3$.  The distance from the eigenvector to the origin
+The distance from the origin should therefore be higher than a third threshold $\tau_3$.  The distance from the eigenvector to the origin
 is computed through the cross product as follows:
 
 \begin{equation}
@@ -124,8 +123,9 @@ where $\vec{v_{eig}}$ is the eigenvector and $\mu$ the centroid of the pixels wi
 Additional filtering should be done to ensure that all the valid patches eigenvector contains only non negative components being 
 not representative of outdoor reflective light $l(x)R_i$.
 
-\item[v] \textit{Eigenvector angles threshold} Finally, we need to discard the patch leading to similar patch lines which would result 
-to wrong airlight vector candidates computation in point vi.  To ensure no false result, the angle between two patch lines 
+\item[v] \textit{Eigenvector angles threshold} To avoid generating unstable airlight candidates, we need to discard the patches 
+exhibiting a too high similarity in their direction. This would prevent biaised results in the computation of the airlight vector
+ candidates computation described in step vi.  To ensure a set of diverse patch line directions, we guarantee that the angle between two patch lines 
 should be above $15 \deg$ [1].
 \item[vi] \textit{Airlight candidates computation}  After patches validation, we can now compute the airlight vector candidates.
 We first construct the plane defined with the patch vector and passing by the origin.  Once the planes are defined for each patch, each pair of planes 
@@ -154,7 +154,7 @@ the best fit vector.  Mathematically, it gives the equation (\ref{airlight_vecto
 where $d_{ij}$ is the euclidean distance between the $j$-th airlight candidate $\vec{\hat{A}}_{\text{cand}}$ and the $i$-th patch line.
 \end{itemize}   
 
-Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep more than 10 patches and are afterwards refined by increasing step
+Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep a significant number of patches (higher than 10) and are afterwards refined by increasing step
 by step the thresholds until 10 patches remain.  These patches are used for the airlight candidates computation at the point vi.
 
 \subsection{Airlight vector magnitude}
