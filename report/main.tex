@@ -49,7 +49,7 @@ The haze effect is commonly modeled by the following equation \cite{airlight}:
 \end{equation}
 
 where $\mathbf{x}$ is the pixel position, $\mathbf{I}$ is the pixel colour under hazing condition or in other words, the image input, $\mathbf{A}$ is the ambient light colour,
-$\mathbf{J}$ the true pixel radiance, $t$ is the transmission coefficient ranging from 0 (airlight colour)
+$\mathbf{J}$ the true pixel radiance, $t$ is the transmission ranging from 0 (airlight colour)
 to 1 (true colour), which is distance-dependent. It is defined in \cite{dehaze} as follows:
 
 \begin{equation}
@@ -82,7 +82,7 @@ Where $l(\mathbf{x})$ expresses the shading coefficient or the scalar brightness
 the light source direction, $R_i$ is the true radiance and $c_i$, the ambient light coefficient $(1-t(\mathbf{x}))$.
 The airlight determination method described in \cite{airlight} is a local patch-based algorithm meaning the image is decomposed on patches on which information is
 gleaned after image treatment.  The patches should obey to specific conditions : it should be composed of pixels with same
-true radiance and a constant transmission coefficient. In other words, the patches are composed of pixel of same true colour and affected
+true radiance and a constant transmission. In other words, the patches are composed of pixel of same true colour and affected
 by the same haze intensity effect. The motivation behind this decomposition lies in the retrieval of the airlight
 vector.  By finding patches composed of pixels fulfilling the previous constraints, we gather group of pixels with colour magnitude
 varying in function of the coefficient $l(\mathbf{x})$ - function of the normal direction of the surfaces/pixels.  By representing these pixels in the RGB 3D space, it is possible to construct, for each patch, the line $\mathbf{I}(\mathbf{x}) = l(\mathbf{x}) \mathbf{R}_i + \mathbf{C}$ 
@@ -124,7 +124,7 @@ Additional filtering should be done to ensure that all the valid patches eigenve
 not representative of outdoor reflective light $l(x)R_i$.
 
 \item[v] \textit{Eigenvector angles threshold} To avoid generating unstable airlight candidates, we need to discard the patches 
-exhibiting a too high similarity in their direction. This would prevent biaised results in the computation of the airlight vector
+exhibiting a too high similarity in their direction. This would prevent biased results in the computation of the airlight vector
  candidates computation described in step vi.  To ensure a set of diverse patch line directions, we guarantee that the angle between two patch lines 
 should be above $15 \deg$ [1].
 \item[vi] \textit{Airlight candidates computation}  After patches validation, we can now compute the airlight vector candidates.
@@ -154,8 +154,8 @@ the best fit vector.  Mathematically, it gives the equation (\ref{airlight_vecto
 where $d_{ij}$ is the euclidean distance between the $j$-th airlight candidate $\vec{\hat{A}}_{\text{cand}}$ and the $i$-th patch line.
 \end{itemize}   
 
-Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep a significant number of patches (higher than 20) and are afterwards refined by increasing step
-by step the thresholds until 30 patches remain.  These patches are used for the airlight candidates computation at the point vi.
+Regarding the threshold $\tau_1, \tau_2, \tau_3$ values, they are initiated to keep a significant number of patches (higher than 30) and are afterwards refined by increasing step
+by step the thresholds until 30 patches remain. These patches are used for the airlight candidates computation at the point vi.
 
 \subsection{Airlight vector magnitude}
 \label{NimaPart}
@@ -171,7 +171,7 @@ We begin by applying a dehazing function assuming a unit amplitude, i.e., \( \|A
 l(x) = \|J(x)\|_2 = \sqrt{J_R(x)^2 + J_G(x)^2 + J_B(x)^2}
 \end{equation}
 
-This is justified by the scene radiance model assumed in \cite{airlight}, where the dehazed image is decomposed as \( J(x) = l(x) R(x) \), with \( R(x) \) being the chromaticity (i.e., a unit-norm color vector) and \( l(x) \) being the scalar brightness. Since \( \|R(x)\|_2 = 1 \), it follows that \( \|J(x)\|_2 = l(x) \). Thus, taking the 2-norm of each pixel vector in \( J(x) \) directly recovers the brightness component. This brightness estimate plays a central role in constructing the percentile-based brightness statistic used later to estimate the airlight amplitude.
+This is justified by the scene radiance model assumed in \cite{airlight}, where the dehazed image is decomposed as \( J(x) = l(x) R(x) \), with \( R(x) \) being the chromaticity (i.e., a unit-norm colour vector) and \( l(x) \) being the scalar brightness. Since \( \|R(x)\|_2 = 1 \), it follows that \( \|J(x)\|_2 = l(x) \). Thus, taking the 2-norm of each pixel vector in \( J(x) \) directly recovers the brightness component. This brightness estimate plays a central role in constructing the percentile-based brightness statistic used later to estimate the airlight amplitude.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -188,8 +188,6 @@ Based on the per-pixel brightness \( l(x) \), we compute a transmission-dependen
 l^*_a(s) = \text{percentile}_{99\%} \{ l(x) \mid t(x) = s \}
 \end{equation}
 To construct \( l^*_a(s) \), we begin by uniformly dividing the transmission range \([0, 1]\) into a fixed number of bins. Each bin is associated with a central transmission value \( s \). For each bin, we collect all pixels whose estimated transmission \( t(x) \) falls within a small interval centered around \( s \). Among these pixels, we extract the 99th percentile of the corresponding brightness values \( l(x) \). This process yields a curve \( l^*_a(s) \), which captures how the brightness of the brightest pixels varies as a function of transmission.
-
-In theory, if the correct atmospheric light magnitude \( \|A\| \) is used, this curve should be nearly flat, since the multiplicative brightness bias introduced by an incorrect \( \|A\| \)  would otherwise distort the brightness of the dehazed image depending on transmission. Thus, deviations from flatness in \( l^*_a(s) \) serve as a cue for detecting and correcting such amplitude errors. This principle underlies the subsequent optimization used to recover the correct airlight amplitude.
 
 \subsubsection{Optimization to Recover Amplitude}
 
@@ -240,9 +238,9 @@ A = \hat{a} \cdot \hat{A}
 
 This estimation is crucial for ensuring that the dehazed image does not suffer from brightness artifacts related to incorrect atmospheric light scaling.
 
-\subsection{Transmission coefficient}
+\subsection{Transmission}
 \label{EmmeranPart}
-The method described in \cite{dehaze} is based on a simple assumption: an image without any haze is often composed of a few dominant colours. This allows to regroup the pixels of the input image in a few clusters, each representing one of those dominant colours. Each pixel inside such cluster will be, according to Eq. (\ref{image_model}), between the dominant colour and the airlight vector determined previously. The transmission coefficient can then be computed by finding the distance between the pixel and the airlight vector.\par
+The method described in \cite{dehaze} is based on a simple assumption: an image without any haze is often composed of a few dominant colours. This allows to regroup the pixels of the input image in a few clusters, each representing one of those dominant colours. Each pixel inside such cluster will be, according to Eq. (\ref{image_model}), between the dominant colour and the airlight vector determined previously. The transmission can then be computed by finding the distance between the pixel and the airlight vector.\par
 The clusters described previously are named \textit{haze-lines} in \cite{dehaze}. and are found by first centering the image around the airlight vector:
 \begin{equation}
     \label{eq:centered_image}
@@ -261,7 +259,7 @@ And this centered image is then represented in polar coordinates. This means tha
     \mathbf{I}_A(\mathbf{x}) = \left[r(\mathbf{x}), \theta(\mathbf{x}), \phi(\mathbf{x})\right]
 \end{equation}
 
-In this polar system, pixels with a similar orientation belong to the same haze-line as they would then all have a color between the airlight vector and the dominant color of the haze-line. The clustering is performed by splitting the polar coordinates into 1000 bins (done by the authors of \cite{dehaze} in \cite{github}) and then finding the nearest bin for every pixel. Fig. \ref{fig:haze_lines} shows one of the haze-lines together with the reference image. 
+In this polar system, pixels with a similar orientation belong to the same haze-line as they would then all have a colour between the airlight vector and the dominant colour of the haze-line. The clustering is performed by splitting the polar coordinates into 1000 bins (done by the authors of \cite{dehaze} in \cite{github}) and then finding the nearest bin for every pixel. Fig. \ref{fig:haze_lines} shows one of the haze-lines together with the reference image. 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/hazeLine.png}
@@ -273,67 +271,74 @@ The transmission $t(\mathbf{x})$ is approached by estimating the dominant colour
     \label{eq:dominant_color}
     r_{max, H} = \max_{\mathbf{x} \in H} r(\mathbf{x})
 \end{equation}
-Where $H$ is the haze-line. The transmission coefficient estimate $\tilde{t}(\mathbf{x})$ is then computed as the ratio between the distance of the pixel to the airlight vector $r(\mathbf{x})$ and the maximum distance of the haze-line $r_{max, H}$:
+Where $H$ is the haze-line. The transmission estimate $\tilde{t}(\mathbf{x})$ is then computed as the ratio between the distance of the pixel to the airlight vector $r(\mathbf{x})$ and the maximum distance of the haze-line $r_{max, H}$:
 \begin{equation}
     \label{eq:transmission_estimate}
     \tilde{t}(\mathbf{x}) = r(\mathbf{x})/r_{max, H}
 \end{equation}
-This transmission coefficient estimate has a lower bound of $t_{LB}(\mathbf{x})$, which is defined in \cite{dehaze} as:
+This transmission estimate has a lower bound of $t_{LB}(\mathbf{x})$, which is defined in \cite{dehaze} as:
 \begin{equation}
     \label{eq:lower_bound_transmission}
     t_{LB}(\mathbf{x}) = 1 - \min_{c \in \{R, G, B\}} \left\{I_c(\mathbf{x}) / A_c\right\}
 \end{equation}
 This lower bound is used to ensure that the radiance $\mathbf{J}$ is not negative.\par
-Using this estimate $\tilde{t}$ would not be very efficient as it would lead to a transmission coefficient that is not continuous across the image. Fig. \ref{fig:first_transmission} shows the transmission coefficient computed using the method described above together with the reference image.\par
+Using this estimate $\tilde{t}$ would not be very efficient as it would lead to a transmission that is not continuous across the image. Fig. \ref{fig:first_transmission} shows the transmission computed using the method described above together with the reference image.\par
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/noOpti.png}
-    \caption{First transmission estimate. The left image is the original image and the transmission coefficient estimate is on the right.}
+    \caption{First transmission estimate. The left image is the original image and the transmission estimate is on the right.}
     \label{fig:first_transmission}
 \end{figure}
-To have a smoother transmission coefficient, the authors of \cite{dehaze} propose to apply an optimization algorithm that aims to find $\hat{t}(\mathbf{x})$ that minimizes:
+To have a smoother transmission, the authors of \cite{dehaze} propose to apply an optimization algorithm that aims to find $\hat{t}(\mathbf{x})$ that minimizes:
 \begin{equation}
     \label{eq:cost_function}
     C(\tilde{t}) = \sum_{\mathbf{x}} \frac{\left[\hat{t}(\mathbf{x}) - \tilde{t}(\mathbf{x})\right]^2}{\sigma^2(\mathbf{x})} + \lambda \sum_{\mathbf{x}} \sum_{\mathbf{y} \in N_{\mathbf{x}}} \frac{\left[\hat{t}(\mathbf{x}) - \hat{t}(\mathbf{y})\right]^2}{||\mathbf{I}(\mathbf{x}) - \mathbf{I}(\mathbf{y})||^2}
 \end{equation}
-Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission coefficient and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighborhood of $\mathbf{x}$.\\
-The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission coefficient close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission coefficient of neighbouring pixels, thus enforcing the smoothness constraint. 
-The optimization is done using a weighted least squares optimizer provided in \cite{github}. The weights are chosen in a way that penalizes haze-lines with a low number of pixels, which avoids such haze-lines to have a large influence on the final transmission coefficient. The weights also depends on the standard deviation of $r(\mathbf{x})$ to give less importance to haze-lines with a large spread. \par
-The optimal transmission coefficient $\hat{t}(\mathbf{x})$ is then computed with $\lambda = 0.1$ and gives a smooth transmission coefficient as shown in Fig. \ref{fig:final_transmission}. 
+Where $\sigma(\mathbf{x})$ is the standard deviation of $r(\mathbf{x})$ for $\mathbf{x} \in H$, $\lambda$ is a parameter that controls the importance of the smoothness of the transmission and $N_{\mathbf{x}}$ is the set of pixels in a $3 \times 3$ neighborhood of $\mathbf{x}$.\\
+The first term of the cost function Eq. (\ref{eq:cost_function}) keeps the transmission close to the estimate $\tilde{t}(\mathbf{x})$. The second term penalizes differences between the transmission of neighbouring pixels, effectively enforcing the smoothness constraint. 
+The optimization is done using a weighted least squares optimizer provided in \cite{github}. The weights are chosen in a way that penalizes haze-lines with a low number of pixels, which avoids such haze-lines to have a large influence on the final transmission. The weights also depends on the standard deviation of $r(\mathbf{x})$ to give less importance to haze-lines with a large spread. \par
+The optimal transmission $\hat{t}(\mathbf{x})$ is then computed with $\lambda = 0.1$ and gives a smooth result as shown in Fig. \ref{fig:final_transmission}. 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/opti.png}
-    \caption{Final transmission estimate.  The left image is the original image and the transmission coefficient estimate, after optimization, is on the right.}
+    \caption{Final transmission estimate.  The left image is the original image and the transmission estimate, after optimization, is on the right.}
     \label{fig:final_transmission}
 \end{figure}
 
 \subsection{Dehazing}
-The final step is to recover the true radiance $\mathbf{J}(\mathbf{x})$ using the computed transmission coefficient and the airlight vector with Eq. (\ref{image_model}):
+The final step is to recover the true radiance $\mathbf{J}(\mathbf{x})$ using the computed transmission and the airlight vector with Eq. (\ref{image_model}):
 \begin{equation}
     \mathbf{J}(\mathbf{x}) = \frac{\mathbf{I}(\mathbf{x}) - (1 - \hat{t}(\mathbf{x})) \cdot \mathbf{A}}{\hat{t}(\mathbf{x})}
 \end{equation}
 
 \section{Experimental results}
-The whole algorithm has been used on several images as can be seen in Fig. (\ref{validation1}, \ref{validation2}, \ref{validation3}).
+The whole algorithm has been used on several images as can be seen in Fig. (\ref{validation1}, \ref{validation2}, \ref{validation3}, \ref{validation4}).
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/validation1.png}
-    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission estimate and the right one is the dehazed image.}
     \label{validation1}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/validation2.png}
-    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission estimate and the right one is the dehazed image.}
     \label{validation2}
 \end{figure}
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/validation3.png}
-    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image on which a histogram stretching has been applied.}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the estimated airlight colour and the right one is the dehazed image on which a histogram stretching has been applied.}
     \label{validation3}
 \end{figure}
-Fig. \ref{validation3} shows that the algorithm is able to work even for images with a lot of haze. Instead of removing haze, we can also increase it by applying Eq. (\ref{image_model}) in which the transmission coefficient is multiplied by a factor smaller than 1. This is shown in Fig. \ref{denser_haze} where the transmission coefficient is multiplied by 0.5.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/validation4.png}
+    \caption{Validation of the dehazing algorithm on an image. The left image is the original image, the middle one is the estimated airlight colour and the right one is the dehazed image on which a histogram stretching has been applied.}
+    \label{validation4}
+\end{figure}
+Fig. \ref{validation3} and \ref{validation4} also shows the estimated airlight colour and it can be seen that it indeed captures the scene's atmosphere. \par
+Instead of removing haze, we can also increase it by applying Eq. (\ref{image_model}) in which the transmission is multiplied by a factor smaller than 1. This is shown in Fig. \ref{denser_haze} where the transmission is multiplied by 0.5.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{img/denser_haze.png}
@@ -351,25 +356,11 @@ where $\beta$ is the wave phase number. A distance mapping is shown in Fig. \ref
     \caption{Distance mapping of the scene points. The left image is the original image and the right one is the distance mapping.}
     \label{distance_mapping}
 \end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{img/validation4.png}
-    \caption{Case of a very hazy image, causing trouble to the algorithm. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
-    \label{validation4}
-\end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{img/validation5.png}
-    \caption{Comparison of the dehazing algorithm with the implementation of \cite{github}. The left image is the original image, the middle one is the transmission coefficient and the right one is the dehazed image.}
-    \label{validation5}
-\end{figure}
-
-It must be noted that the algorithm is not perfect and can fail in some cases. Fig. \ref{validation4} shows an example of such images. The dehazed image has a strong airlight that looks green and the transmission looks right. The implemented version of \cite{github} gives better results, as shown in Fig. \ref{validation5} as they used a different method for the airlight determination.
 
 \section{Conclusion}
 
 In this report, we implemented and analyzed a fully automatic single-image dehazing pipeline based on the methods proposed in \cite{airlight} and \cite{dehaze}. The algorithm successfully decomposes a hazy image into its physical components: the atmospheric light vector and the scene transmission, allowing us to reconstruct a visually clearer estimate of the original radiance.
-We showed how the orientation and magnitude of the atmospheric light vector can be reliably recovered by analyzing small image patches and using global brightness regularities. We also demonstrated how haze-lines in the RGB color space can be used to extract transmission estimates, which are then refined through spatial optimization to enforce continuity. This leads to more natural dehazed images and enables downstream applications such as depth estimation and haze augmentation.
+We showed how the orientation and magnitude of the atmospheric light vector can be reliably recovered by analyzing small image patches and using global brightness regularities. We also demonstrated how haze-lines in the RGB colour space can be used to extract transmission estimates, which are then refined through spatial optimization to enforce continuity. This leads to more natural dehazed images and enables downstream applications such as depth estimation and haze augmentation.
 Validation results confirm that the algorithm performs well under a variety of hazy conditions, and its modular structure makes it adaptable for further improvements or integration into real-world image enhancement systems. Overall, this project highlights the effectiveness of combining physical modeling with statistical priors to solve challenging inverse problems in computer vision.
 
 \vspace{12pt}
