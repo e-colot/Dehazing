@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  9 JUN 2025 09:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.18)  9 JUN 2025 11:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -282,7 +282,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
 
-Underfull \hbox (badness 2080) in paragraph at lines 98--102
+Underfull \hbox (badness 2080) in paragraph at lines 97--101
 []\OT1/ptm/m/it/10 Patch de-com-po-si-tion \OT1/ptm/m/n/10 As men-tioned pre-vi-ously, the
  []
 
@@ -297,14 +297,14 @@ Underfull \hbox (badness 2080) in paragraph at lines 98--102
 
 [2]
 
-<img/hazeLine.png, id=24, 706.13812pt x 262.73157pt>
+
+
+[3]
+<img/hazeLine.png, id=27, 706.13812pt x 262.73157pt>
 File: img/hazeLine.png Graphic file (type png)
 <use img/hazeLine.png>
 Package pdftex.def Info: img/hazeLine.png  used on input line 267.
 (pdftex.def)             Requested size: 252.0pt x 93.76144pt.
-
-
-[3]
 <img/noOpti.png, id=29, 740.0147pt x 255.20343pt>
 File: img/noOpti.png Graphic file (type png)
 <use img/noOpti.png>
@@ -388,15 +388,15 @@ L3 programming layer <2024-11-02>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4382 strings out of 473362
- 69075 string characters out of 5720994
+ 4381 strings out of 473362
+ 69066 string characters out of 5720994
  479510 words of memory out of 5000000
- 27445 multiletter control sequences out of 15000+600000
+ 27444 multiletter control sequences out of 15000+600000
  598799 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,9n,65p,1000b,338s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><e:/TexLive/texlive/2024/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (6 pages, 5197758 bytes).
+Output written on main.pdf (6 pages, 5197713 bytes).
 PDF statistics:
  125 PDF objects out of 1000 (max. 8388607)
  64 compressed objects within 1 object stream
